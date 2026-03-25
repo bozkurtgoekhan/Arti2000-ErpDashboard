@@ -172,6 +172,36 @@
             margin-top: 8px;
         }
 
+        .stat-card.active-filter {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            border-left-width: 6px;
+            border-left-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(96, 165, 250, 0.3), 0 4px 15px rgba(0, 0, 0, 0.4);
+            position: relative;
+        }
+
+        .filter-dismiss {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #2d3148;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            color: #a0aec0;
+            transition: all 0.2s ease;
+        }
+
+        .filter-dismiss:hover {
+            background-color: #60a5fa;
+            color: #0f1117;
+        }
+
         .deadline-section {
             background: #1a202c;
             border: 1px solid #2d3148;
@@ -359,6 +389,34 @@
             flex-wrap: wrap;
         }
 
+        .gantt-preset-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .gantt-preset-btn {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            border: 1px solid #2d3148;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .gantt-preset-btn:hover {
+            border-color: #60a5fa;
+            background-color: #1a202c;
+        }
+
+        .gantt-preset-btn:active {
+            background-color: #2d3148;
+            border-color: #60a5fa;
+        }
+
         .date-range-slider {
             display: flex;
             gap: 15px;
@@ -400,6 +458,61 @@
             overflow-x: auto;
         }
 
+        .gantt-timeline-slider {
+            width: 100%;
+            height: 50px;
+            margin-bottom: 15px;
+            position: relative;
+            cursor: default;
+        }
+
+        .gantt-timeline-slider svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .gantt-slider-track {
+            fill: #1a202c;
+            stroke: #2d3148;
+            rx: 4;
+        }
+
+        .gantt-slider-selected {
+            fill: rgba(96, 165, 250, 0.2);
+            stroke: #60a5fa;
+            stroke-width: 1;
+            rx: 4;
+            cursor: grab;
+        }
+
+        .gantt-slider-selected:active {
+            cursor: grabbing;
+        }
+
+        .gantt-slider-handle {
+            fill: #60a5fa;
+            stroke: #fff;
+            stroke-width: 2;
+            cursor: ew-resize;
+            filter: drop-shadow(0 0 4px rgba(96, 165, 250, 0.5));
+        }
+
+        .gantt-slider-handle:hover {
+            fill: #93bbfc;
+        }
+
+        .gantt-slider-label {
+            fill: #a0aec0;
+            font-size: 11px;
+            text-anchor: middle;
+        }
+
+        .gantt-slider-today {
+            stroke: #10b981;
+            stroke-width: 2;
+            stroke-dasharray: 3,2;
+        }
+
         .table-section {
             background: #1a202c;
             border: 1px solid #2d3148;
@@ -407,6 +520,44 @@
             padding: 25px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
             margin-bottom: 40px;
+        }
+
+        .table-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .table-section-header h3 {
+            font-size: 1.3rem;
+            color: #e2e8f0;
+            margin: 0;
+        }
+
+        .export-btn {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            border: 1px solid #2d3148;
+            padding: 10px 18px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .export-btn:hover {
+            border-color: #60a5fa;
+            background-color: #1a202c;
+            box-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
+        }
+
+        .export-btn:active {
+            background-color: #2d3148;
         }
 
         .table-section h3 {
@@ -451,6 +602,7 @@
 
         tbody tr {
             transition: all 0.3s ease;
+            border-left: 4px solid #3b82f6;
         }
 
         tbody tr:hover {
@@ -460,6 +612,14 @@
 
         tbody tr:nth-child(odd) {
             background-color: rgba(45, 49, 72, 0.3);
+        }
+
+        tbody tr.high-priority-row {
+            background-color: rgba(239, 68, 68, 0.08);
+        }
+
+        tbody tr.high-priority-row:nth-child(odd) {
+            background-color: rgba(239, 68, 68, 0.12);
         }
 
         .remaining-days-cell {
@@ -588,6 +748,21 @@
         .tooltip-ontime {
             color: #10b981;
             font-weight: 700;
+        }
+
+        .tooltip-issues-list {
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #2d3148;
+            font-size: 11px;
+        }
+
+        .tooltip-issue-item {
+            color: #cbd5e0;
+            padding: 2px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* Termin Raporu Modal */
@@ -840,7 +1015,7 @@
     <div class="container">
         <div class="header">
             <h1>ERP Sorun Takip Dashboard</h1>
-            <p>ARTI2000 - WOC ERP Sorun YÃ¶netimi</p>
+            <p>ARTI2000 - WOC ERP Sorun Yönetimi</p>
             <p id="updateInfo" style="font-size:0.85rem;color:#6b7280;margin-top:4px"></p>
         </div>
 
@@ -850,91 +1025,107 @@
                 <div class="filter-group">
                     <label for="filterKategori">Kategori</label>
                     <select id="filterKategori">
-                        <option value="">TÃ¼mÃ¼</option>
+                        <option value="">Tümü</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="filterAltKategori">Alt Kategori</label>
                     <select id="filterAltKategori">
-                        <option value="">TÃ¼mÃ¼</option>
+                        <option value="">Tümü</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="filterDurum">Durum</label>
                     <select id="filterDurum">
-                        <option value="">TÃ¼mÃ¼</option>
+                        <option value="">Tümü</option>
                     </select>
                 </div>
                 <div class="filter-group">
                     <label for="filterSorumlu">Sorumlu</label>
                     <select id="filterSorumlu">
-                        <option value="">TÃ¼mÃ¼</option>
+                        <option value="">Tümü</option>
                     </select>
                 </div>
                 <div class="filter-group">
-                    <label for="filterOncelik">Ãncelik</label>
+                    <label for="filterOncelik">Öncelik</label>
                     <select id="filterOncelik">
-                        <option value="">TÃ¼mÃ¼</option>
+                        <option value="">Tümü</option>
                     </select>
                 </div>
             </div>
-            <button class="reset-btn" onclick="resetFilters()">Filtreleri SÄ±fÄ±rla</button>
+            <button class="reset-btn" onclick="resetFilters()">Filtreleri Sıfırla</button>
         </div>
 
         <div class="stats-grid" id="statsGrid"></div>
 
         <div class="deadline-section">
             <div class="deadline-section-header">
-                <h3>Termin (Deadline) PerformansÄ±</h3>
+                <h3>Termin (Deadline) Performansı</h3>
                 <button class="csv-export-btn" onclick="openTerminReport()">Termin Raporu</button>
             </div>
             <div class="deadline-cards-grid" id="deadlineCards"></div>
         </div>
 
         <div class="overdue-section" id="overdueSection" style="display:none;">
-            <h3>GecikmiÅ Sorunlar</h3>
+            <h3>Gecikmiş Sorunlar</h3>
             <div id="overdueContainer"></div>
         </div>
 
         <div class="charts-section">
             <div class="chart-container">
-                <h3>Durum DaÄÄ±lÄ±mÄ±</h3>
+                <h3>Durum Dağılımı</h3>
                 <div class="chart-canvas" id="durumChart"></div>
                 <div class="legend" id="durumLegend"></div>
             </div>
             <div class="chart-container">
-                <h3>Kategori DaÄÄ±lÄ±mÄ±</h3>
+                <h3>Kategori Dağılımı</h3>
                 <div class="chart-canvas" id="kategoriChart"></div>
                 <div class="legend" id="kategoriLegend"></div>
             </div>
             <div class="chart-container">
-                <h3>Sorumluluk DaÄÄ±lÄ±mÄ±</h3>
+                <h3>Sorumluluk Dağılımı</h3>
                 <div class="chart-canvas" id="sorumluChart"></div>
                 <div class="legend" id="sorumluLegend"></div>
             </div>
             <div class="chart-container">
-                <h3>Alt Kategori DaÄÄ±lÄ±mÄ±</h3>
+                <h3>Alt Kategori Dağılımı</h3>
                 <div class="chart-canvas" id="altKategoriChart"></div>
                 <div class="legend" id="altKategoriLegend"></div>
+            </div>
+            <div class="chart-container">
+                <h3>Öncelik Dağılımı</h3>
+                <div class="chart-canvas" id="oncelikChart"></div>
+                <div class="legend" id="oncelikLegend"></div>
             </div>
         </div>
 
         <div class="gantt-section">
-            <h3>Zaman Ãizelgesi</h3>
+            <h3>Zaman Çizelgesi</h3>
             <div class="gantt-controls">
                 <div class="date-range-slider">
-                    <label for="ganttStartDate">BaÅlangÄ±Ã§:</label>
+                    <label for="ganttStartDate">Başlangıç:</label>
                     <input type="date" id="ganttStartDate">
-                    <label for="ganttEndDate">BitiÅ:</label>
+                    <label for="ganttEndDate">Bitiş:</label>
                     <input type="date" id="ganttEndDate">
+                </div>
+                <div class="gantt-preset-buttons">
+                    <button class="gantt-preset-btn" onclick="setGanttPreset('1month')">Son 1 Ay</button>
+                    <button class="gantt-preset-btn" onclick="setGanttPreset('3months')">Son 3 Ay</button>
+                    <button class="gantt-preset-btn" onclick="setGanttPreset('all')">Tümü</button>
+                    <button class="gantt-preset-btn" onclick="goToToday()">Bugün'e Git</button>
                 </div>
                 <div class="gantt-range-display" id="ganttRangeDisplay"></div>
             </div>
+            <!-- Interactive timeline range slider -->
+            <div class="gantt-timeline-slider" id="ganttTimelineSlider"></div>
             <div class="gantt-canvas" id="ganttChart"></div>
         </div>
 
         <div class="table-section">
-            <h3>TÃ¼m KayÄ±tlar</h3>
+            <div class="table-section-header">
+                <h3>Tüm Kayıtlar</h3>
+                <button class="export-btn" onclick="exportTableToCSV()">Excel'e Aktar</button>
+            </div>
             <div class="table-wrapper">
                 <table id="dataTable">
                     <thead>
@@ -944,12 +1135,12 @@
                             <th>Kategori</th>
                             <th>Alt Kategori</th>
                             <th>Durum</th>
-                            <th>Ãncelik</th>
+                            <th>Öncelik</th>
                             <th>Sorumlu</th>
-                            <th>Ä°lk GÃ¶rÃ¼lme</th>
-                            <th>ÃÃ¶zÃ¼m Tarihi</th>
-                            <th>Termin SÃ¼resi</th>
-                            <th>Kalan GÃ¼n</th>
+                            <th>İlk Görülme</th>
+                            <th>Çözüm Tarihi</th>
+                            <th>Termin Süresi</th>
+                            <th>Kalan Gün</th>
                         </tr>
                     </thead>
                     <tbody id="tableBody"></tbody>
@@ -966,7 +1157,7 @@
             <div class="report-modal-header">
                 <h2>Termin Performans Raporu</h2>
                 <div class="report-modal-header-actions">
-                    <button class="report-download-btn" onclick="downloadReportCSV()">CSV Ä°ndir</button>
+                    <button class="report-download-btn" onclick="downloadReportCSV()">CSV İndir</button>
                     <button class="report-modal-close" onclick="closeTerminReport()">&times;</button>
                 </div>
             </div>
@@ -976,71 +1167,79 @@
 
     <div id="loadingOverlay" style="position:fixed;inset:0;background:rgba(15,17,23,0.92);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column">
         <div style="width:50px;height:50px;border:4px solid #2d3148;border-top:4px solid #60a5fa;border-radius:50%;animation:spin 1s linear infinite"></div>
-        <p id="loadingText" style="color:#a0aec0;margin-top:16px;font-size:14px">Notion'dan veriler Ã§ekiliyor...</p>
+        <p id="loadingText" style="color:#a0aec0;margin-top:16px;font-size:14px">Notion'dan veriler çekiliyor...</p>
         <style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>
     </div>
 
     <script>
         let ALL_DATA = [
-            {"id":"ERP-25","konu":"Ãretim planÄ±nda kullanÄ±cÄ± takip sistemi kurulmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-36","konu":"PDKS (Personel Devam Kontrol Sistemi) WOC ERP'ye baÄlanmalÄ±.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°K / PDKS","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-32","konu":"BÃ¼tÃ§eye kÄ±yasla reel maliyet raporlamasÄ± yapÄ±lmalÄ±. YÃ¶netim raporlarÄ± iÃ§in kritik.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Raporlama","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-22","konu":"SÃ¶zleÅme kalemi miktarÄ±na gÃ¶re bÃ¼tÃ§e kalem miktarÄ±ndan otomatik dÃ¼Åerek hesaplamalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-26","konu":"HakediÅ modÃ¼lÃ¼ henÃ¼z devreye alÄ±nmadÄ±. SÃ¶zleÅme ve bÃ¼tÃ§e entegrasyonu ile birlikte planlanmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"HakediÅ","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-23","konu":"Kritik malzeme sorgusunun nasÄ±l yapÄ±lacaÄÄ± tanÄ±mlanmalÄ±. Ãretim planÄ±-depo entegrasyonu.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-31","konu":"BÃ¼tÃ§e iÃ§in WOC'a form yÃ¼klenmeli. Operasyon kategorilerinde olduÄu gibi bÃ¼tÃ§e iÃ§inde excel olarak dÄ±Åa aktar butonu olmalÄ±","kategori":"Ä°Ã§ Sorumluluk","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-20","konu":"SÃ¶zleÅme bÃ¼tÃ§eyi miktar olarak aÅarsa ne olacaÄÄ± tanÄ±mlanmalÄ±. UyarÄ±/engelleme mekanizmasÄ± gerekli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-63","konu":"YÄ±llÄ±k izin hesaplamalarÄ±nda gÃ¼n hatasÄ±","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-03-23","cozumTarihi":"2026-03-23","terminSuresi":""},
-            {"id":"ERP-2","konu":"SatÄ±n alma talep ekranÄ±nda portal alanÄ± bulunmuyor. WOC Ã¼stÃ¼nde Ã§alÄ±ÅÄ±yor.","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-29","konu":"Metin Bey'in aÃ§tÄ±ÄÄ± teklifler Burcu HanÄ±m'a onaya gitmeli. Ä°kili onay sistemi kurulmalÄ±?","kategori":"Ä°Ã§ Sorumluluk","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-24","konu":"GerÃ§ekleÅen ile planlanan ilerlemenin karÅÄ±laÅtÄ±rÄ±ldÄ±ÄÄ± performans ekranÄ± oluÅturulmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-33","konu":"Stok sarf hareketlerinde son Ã§Ä±kan Ã¼rÃ¼n en Ã¼stte gÃ¶zÃ¼kmel WOC'a iletilmeli.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-15","konu":"SÃ¶zleÅme bÃ¼tÃ§e kalemi filtreleme eksik","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-17","konu":"BaÅlangÄ±Ã§ ve bitiÅ tarihi neden giriliyor, sistem kendi hesaplayacak mÄ± netleÅtirilmeli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-19","konu":"SÃ¶zleÅmelerde tedarik tarihi tanÄ±mÄ± ve yÃ¶netimi netleÅtirilmeli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-9","konu":"Ä°rsaliye numarasÄ± olmayan kayÄ±tlar tespit edildi ve Ã§Ã¶zÃ¼ldÃ¼.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°rsaliye / Fatura","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-16","terminSuresi":""},
-            {"id":"ERP-28","konu":"Self-service dersi verilmesi gerekiyor. Selda HanÄ±m izin Ã§eÅitleri hakkÄ±nda eÄitim verecek.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°K / PDKS","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"SELDA HANIM","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-14","konu":"Saha virman talimatÄ± kurgusu (Mekan). Yusuf Bey uygun deÄil dedi ancak yeni gÃ¶rÃ¼Åmede tekrar gÃ¼ndeme geldi.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Depo / Stok","durum":"PlanlanÄ±yor","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-35","konu":"Depo tablet konuÅuldu, alÄ±nacak. Metin Bey sorumluluÄunda.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"Orta","sorumlu":"METÄ°N BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-12","konu":"Birim Ã§evirme iÅlemleri hatalÄ± Ã§alÄ±ÅÄ±yor. Yusuf Bey'e sorulup eÄitim alÄ±nmasÄ± gerekiyor. HenÃ¼z WOC'a iletilmedi.","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-16","konu":"SÃ¶zleÅme otomatik yÃ¼kleme ve doldurma","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-8","konu":"Teklif/onay ekranÄ±nda pivot gÃ¶rÃ¼nÃ¼mÃ¼ bozuk","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"2026-02-23","terminSuresi":""},
-            {"id":"ERP-18","konu":"BÃ¼tÃ§ede karÅÄ±lÄ±ÄÄ± olmayan kalem yÃ¶netimi","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-43","konu":"SS geliÅtirmeleri: Talep edilen izin gÃ¼nÃ¼nÃ¼n izin taleplerim alanÄ±nda gÃ¶rÃ¼lmesÅ","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-11","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-7","konu":"SatÄ±n alma talep kullanÄ±cÄ±sÄ± teklif onay ekranÄ±na akmalÄ±","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-10","konu":"Depo tarafÄ±ndan gÃ¶rÃ¼lmeyen irsaliyeler vardÄ±. Ä°rsaliye sorumlusu saha mimarÄ±nÄ±n girmesine karar verildi (Ã¶rnk. Ferat Åef)","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"ALPER BEY","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-23","terminSuresi":""},
-            {"id":"ERP-11","konu":"SatÄ±n almada kur sorunsalÄ± â fatura kesildiÄi tarihteki kur yansÄ±yor","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-27","konu":"Depo sayÄ±mlarÄ±nÄ±n sisteme girilmesi","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"CEM BEY / METÄ°N BEY","ilkGorulme":"2026-02-24","cozumTarihi":"2026-03-02","terminSuresi":""},
-            {"id":"ERP-49","konu":"SÄ±ralama dÃ¼zeni: BÃ¼tÃ§e oluÅtururken operasyon kategorileri alfabetik sÄ±rada olmalÄ± ve baÅlÄ±klar kapalÄ± gelmeli","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"Orta","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-57","konu":"BÃ¼tÃ§e modulunde yapÄ±lan deÄiÅimler kaydolmuyor","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-45","konu":"BÃTÃE: kalemler silinemiyor","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-6","konu":"Ä°hbar raporu hatalÄ± Ã§alÄ±ÅÄ±yor, dÃ¼zeltme yapÄ±lÄ±yor.","kategori":"Sistem HatasÄ±","altKategori":"Raporlama","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-4","konu":"Fatura ekranÄ± aynÄ± caride aynÄ± seri no izin vermemeli","kategori":"Sistem HatasÄ±","altKategori":"Ä°rsaliye / Fatura","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-16","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-3","konu":"Ä°rsaliye giriÅi yapÄ±ldÄ±ÄÄ±nda talep sahibine mail gitmesi gerekiyor.","kategori":"Sistem HatasÄ±","altKategori":"Ä°rsaliye / Fatura","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-34","konu":"10'luk Ã§ivi stok kartÄ±nÄ±n birimi deÄiÅtirilemiyor. WOC'a iletilmeli.","kategori":"Sistem HatasÄ±","altKategori":"Depo / Stok","durum":"WOC Ä°letildi","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-47","konu":"DemirbaÅ kayÄ±tlarÄ± yÃ¼kleme hatasÄ±","kategori":"Sistem HatasÄ±","altKategori":"DemirbaÅ","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-10","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-13","konu":"Bozulan demirbaÅ aletler bakiyeden dÃ¼ÅÃ¼rÃ¼lemiyor","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"DemirbaÅ","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-21","konu":"Birim fiyat deÄiÅim takibi ve geÃ§miÅ baÄlantÄ±sÄ±","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-65","konu":"Sistemde, hafta tatili farklÄ± olan Ã§alÄ±Åanlar iÃ§in yÄ±llÄ±k izin hesaplamasÄ±nda her gruba tÃ¼m yÄ±lÄ± kapsayan ayrÄ± takvimler tanÄ±mlamak gerekiyor.","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-23","cozumTarihi":"","terminSuresi":"2026-03-31"},
-            {"id":"ERP-62","konu":"Kredi kartÄ± ekstrelerini iÅlerken kredi kartÄ± hareketlerinden sadece cari Ã¶demeler seÃ§iliyor.","kategori":"Sistem HatasÄ±","altKategori":"Genel Muhasebe","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-03-13","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-46","konu":"KREDÄ° ÃDEMELERÄ°NDE 303 YERÄ°NE 403 HESAP ÃALIÅIYOR","kategori":"Sistem HatasÄ±","altKategori":"Genel Muhasebe","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"EREN BEY","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
-            {"id":"ERP-52","konu":"BÃ¼tÃ§ede var olan operasyonun altÄ±na yeni kalem eklerken kategori yol aÄacÄ±nÄ±n otomatik gelmesini istiyoruz","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""}
+            {"id":"ERP-25","konu":"Üretim planında kullanıcı takip sistemi kurulmalı.","kategori":"Devreye Alınmamış Süreç","altKategori":"İş Planı (MRP)","durum":"Planlanıyor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-36","konu":"PDKS (Personel Devam Kontrol Sistemi) WOC ERP'ye bağlanmalı.","kategori":"İç Sorumluluk","altKategori":"İK / PDKS","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-32","konu":"Bütçeye kıyasla reel maliyet raporlaması yapılmalı. Yönetim raporları için kritik.","kategori":"Devreye Alınmamış Süreç","altKategori":"Raporlama","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-22","konu":"Sözleşme kalemi miktarına göre bütçe kalem miktarından otomatik düşerek hesaplamalı.","kategori":"Devreye Alınmamış Süreç","altKategori":"Bütçe","durum":"Planlanıyor","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-26","konu":"Hakediş modülü henüz devreye alınmadı. Sözleşme ve bütçe entegrasyonu ile birlikte planlanmalı.","kategori":"Devreye Alınmamış Süreç","altKategori":"Hakediş","durum":"Planlanıyor","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-23","konu":"Kritik malzeme sorgusunun nasıl yapılacağı tanımlanmalı. Üretim planı-depo entegrasyonu.","kategori":"Devreye Alınmamış Süreç","altKategori":"İş Planı (MRP)","durum":"Planlanıyor","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-31","konu":"Bütçe için WOC'a form yüklenmeli. Operasyon kategorilerinde olduğu gibi bütçe içinde excel olarak dışa aktar butonu olmalı","kategori":"İç Sorumluluk","altKategori":"Bütçe","durum":"Beklemede","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-20","konu":"Sözleşme bütçeyi miktar olarak aşarsa ne olacağı tanımlanmalı. Uyarı/engelleme mekanizması gerekli.","kategori":"Devreye Alınmamış Süreç","altKategori":"Bütçe","durum":"Planlanıyor","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-63","konu":"Yıllık izin hesaplamalarında gün hatası","kategori":"Sistem Hatası","altKategori":"İK / PDKS","durum":"Çözüldü","oncelik":"Yüksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-03-23","cozumTarihi":"2026-03-23","terminSuresi":""},
+            {"id":"ERP-2","konu":"Satın alma talep ekranında portal alanı bulunmuyor. WOC üstünde çalışıyor.","kategori":"Sistem Hatası","altKategori":"Satın Alma","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"HEDİYE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-29","konu":"Metin Bey'in açtığı teklifler Burcu Hanım'a onaya gitmeli. İkili onay sistemi kurulmalı?","kategori":"İç Sorumluluk","altKategori":"Satın Alma","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-24","konu":"Gerçekleşen ile planlanan ilerlemenin karşılaştırıldığı performans ekranı oluşturulmalı.","kategori":"Devreye Alınmamış Süreç","altKategori":"İş Planı (MRP)","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-33","konu":"Stok sarf hareketlerinde son çıkan ürün en üstte gözükmel WOC'a iletilmeli.","kategori":"İç Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"Düşük","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-15","konu":"Sözleşme bütçe kalemi filtreleme eksik","kategori":"Devreye Alınmamış Süreç","altKategori":"Sözleşme","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"WOC","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-17","konu":"Başlangıç ve bitiş tarihi neden giriliyor, sistem kendi hesaplayacak mı netleştirilmeli.","kategori":"Devreye Alınmamış Süreç","altKategori":"Sözleşme","durum":"Planlanıyor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-19","konu":"Sözleşmelerde tedarik tarihi tanımı ve yönetimi netleştirilmeli.","kategori":"Devreye Alınmamış Süreç","altKategori":"Sözleşme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-9","konu":"İrsaliye numarası olmayan kayıtlar tespit edildi ve çözüldü.","kategori":"İç Sorumluluk","altKategori":"İrsaliye / Fatura","durum":"Çözüldü","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-16","terminSuresi":""},
+            {"id":"ERP-28","konu":"Self-service dersi verilmesi gerekiyor. Selda Hanım izin çeşitleri hakkında eğitim verecek.","kategori":"İç Sorumluluk","altKategori":"İK / PDKS","durum":"Planlanıyor","oncelik":"Orta","sorumlu":"SELDA HANIM","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-14","konu":"Saha virman talimatı kurgusu (Mekan). Yusuf Bey uygun değil dedi ancak yeni görüşmede tekrar gündeme geldi.","kategori":"Devreye Alınmamış Süreç","altKategori":"Depo / Stok","durum":"Planlanıyor","oncelik":"Düşük","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-35","konu":"Depo tablet konuşuldu, alınacak. Metin Bey sorumluluğunda.","kategori":"İç Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"Orta","sorumlu":"METİN BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-12","konu":"Birim çevirme işlemleri hatalı çalışıyor. Yusuf Bey'e sorulup eğitim alınması gerekiyor. Henüz WOC'a iletilmedi.","kategori":"Sistem Hatası","altKategori":"Satın Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-16","konu":"Sözleşme otomatik yükleme ve doldurma","kategori":"Devreye Alınmamış Süreç","altKategori":"Sözleşme","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-8","konu":"Teklif/onay ekranında pivot görünümü bozuk","kategori":"Sistem Hatası","altKategori":"Satın Alma","durum":"Çözüldü","oncelik":"Yüksek","sorumlu":"HEDİYE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"2026-02-23","terminSuresi":""},
+            {"id":"ERP-18","konu":"Bütçede karşılığı olmayan kalem yönetimi","kategori":"Devreye Alınmamış Süreç","altKategori":"Bütçe","durum":"Planlanıyor","oncelik":"Yüksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-43","konu":"SS geliştirmeleri: Talep edilen izin gününün izin taleplerim alanında görülmesş","kategori":"Sistem Hatası","altKategori":"İK / PDKS","durum":"WOC İletildi","oncelik":"Orta","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-11","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-7","konu":"Satın alma talep kullanıcısı teklif onay ekranına akmalı","kategori":"Sistem Hatası","altKategori":"Satın Alma","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-10","konu":"Depo tarafından görülmeyen irsaliyeler vardı. İrsaliye sorumlusu saha mimarının girmesine karar verildi (örnk. Ferat Şef)","kategori":"İç Sorumluluk","altKategori":"Depo / Stok","durum":"Çözüldü","oncelik":"Yüksek","sorumlu":"ALPER BEY","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-23","terminSuresi":""},
+            {"id":"ERP-11","konu":"Satın almada kur sorunsalı — fatura kesildiği tarihteki kur yansıyor","kategori":"Sistem Hatası","altKategori":"Satın Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-27","konu":"Depo sayımlarının sisteme girilmesi","kategori":"İç Sorumluluk","altKategori":"Depo / Stok","durum":"Çözüldü","oncelik":"Yüksek","sorumlu":"CEM BEY / METİN BEY","ilkGorulme":"2026-02-24","cozumTarihi":"2026-03-02","terminSuresi":""},
+            {"id":"ERP-49","konu":"Sıralama düzeni: Bütçe oluştururken operasyon kategorileri alfabetik sırada olmalı ve başlıklar kapalı gelmeli","kategori":"Sistem Hatası","altKategori":"Bütçe","durum":"Beklemede","oncelik":"Orta","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-57","konu":"Bütçe modulunde yapılan değişimler kaydolmuyor","kategori":"Sistem Hatası","altKategori":"Bütçe","durum":"Beklemede","oncelik":"Yüksek","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-45","konu":"BÜTÇE: kalemler silinemiyor","kategori":"Sistem Hatası","altKategori":"Bütçe","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-6","konu":"İhbar raporu hatalı çalışıyor, düzeltme yapılıyor.","kategori":"Sistem Hatası","altKategori":"Raporlama","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-4","konu":"Fatura ekranı aynı caride aynı seri no izin vermemeli","kategori":"Sistem Hatası","altKategori":"İrsaliye / Fatura","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-16","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-3","konu":"İrsaliye girişi yapıldığında talep sahibine mail gitmesi gerekiyor.","kategori":"Sistem Hatası","altKategori":"İrsaliye / Fatura","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"WOC","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-34","konu":"10'luk çivi stok kartının birimi değiştirilemiyor. WOC'a iletilmeli.","kategori":"Sistem Hatası","altKategori":"Depo / Stok","durum":"WOC İletildi","oncelik":"Düşük","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-47","konu":"Demirbaş kayıtları yükleme hatası","kategori":"Sistem Hatası","altKategori":"Demirbaş","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-13","konu":"Bozulan demirbaş aletler bakiyeden düşürülemiyor","kategori":"Devreye Alınmamış Süreç","altKategori":"Demirbaş","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-21","konu":"Birim fiyat değişim takibi ve geçmiş bağlantısı","kategori":"Devreye Alınmamış Süreç","altKategori":"Sözleşme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-65","konu":"Sistemde, hafta tatili farklı olan çalışanlar için yıllık izin hesaplamasında her gruba tüm yılı kapsayan ayrı takvimler tanımlamak gerekiyor.","kategori":"Sistem Hatası","altKategori":"İK / PDKS","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-23","cozumTarihi":"","terminSuresi":"2026-03-31"},
+            {"id":"ERP-62","konu":"Kredi kartı ekstrelerini işlerken kredi kartı hareketlerinden sadece cari ödemeler seçiliyor.","kategori":"Sistem Hatası","altKategori":"Genel Muhasebe","durum":"WOC İletildi","oncelik":"Yüksek","sorumlu":"HEDİYE HANIM","ilkGorulme":"2026-03-13","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-46","konu":"KREDİ ÖDEMELERİNDE 303 YERİNE 403 HESAP ÇALIŞIYOR","kategori":"Sistem Hatası","altKategori":"Genel Muhasebe","durum":"WOC İletildi","oncelik":"Orta","sorumlu":"EREN BEY","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-52","konu":"Bütçede var olan operasyonun altına yeni kalem eklerken kategori yol ağacının otomatik gelmesini istiyoruz","kategori":"Sistem Hatası","altKategori":"Bütçe","durum":"WOC İletildi","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""}
         ];
+
+        // Sort by ID number
+        ALL_DATA.sort((a, b) => {
+            const na = parseInt(a.id.replace('ERP-', '')) || 0;
+            const nb = parseInt(b.id.replace('ERP-', '')) || 0;
+            return na - nb;
+        });
 
         let filteredData = [...ALL_DATA];
         let ganttDateRange = { start: null, end: null };
+        let activeStatFilter = { type: null, value: null };
 
         const durumColors = {
-            'WOC Ä°letildi': '#f59e0b',
+            'WOC İletildi': '#f59e0b',
             'Beklemede': '#3b82f6',
-            'PlanlanÄ±yor': '#a78bfa',
-            'ÃÃ¶zÃ¼ldÃ¼': '#10b981'
+            'Planlanıyor': '#a78bfa',
+            'Çözüldü': '#10b981'
         };
 
         const kategoriColors = {
-            'Sistem HatasÄ±': '#ef4444',
-            'Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§': '#f59e0b',
-            'Ä°Ã§ Sorumluluk': '#3b82f6'
+            'Sistem Hatası': '#ef4444',
+            'Devreye Alınmamış Süreç': '#f59e0b',
+            'İç Sorumluluk': '#3b82f6'
         };
 
         // Helper function to get today's date in YYYY-MM-DD format
@@ -1074,7 +1273,7 @@
             let totalDelay = 0, delayedCount = 0;
 
             filteredData.forEach(d => {
-                if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
+                if (d.durum === 'Çözüldü') {
                     if (!d.terminSuresi || d.cozumTarihi <= d.terminSuresi) {
                         onTime++;
                     }
@@ -1113,7 +1312,7 @@
 
             const html = `
                 <div class="stat-card on-time">
-                    <h4>ZamanÄ±nda Tamamlanan</h4>
+                    <h4>Zamanında Tamamlanan</h4>
                     <div class="number">${metrics.onTime}</div>
                     <div class="percentage">${onTimePercent}%</div>
                 </div>
@@ -1128,13 +1327,13 @@
                     <div class="percentage">${awaitingPercent}%</div>
                 </div>
                 <div class="stat-card no-deadline">
-                    <h4>Termin TanÄ±msÄ±z</h4>
+                    <h4>Termin Tanımsız</h4>
                     <div class="number">${metrics.noDeadline}</div>
                 </div>
                 <div class="stat-card avg-delay">
                     <h4>Ortalama Gecikme</h4>
                     <div class="number">${metrics.avgDelay}</div>
-                    <div class="percentage">gÃ¼n</div>
+                    <div class="percentage">gün</div>
                 </div>
             `;
 
@@ -1145,7 +1344,7 @@
         function getOverdueIssues() {
             const today = getTodayString();
             return filteredData.filter(d =>
-                d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼'
+                d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'Çözüldü'
             ).sort((a, b) => {
                 const delayA = calculateDaysDifference(a.terminSuresi);
                 const delayB = calculateDaysDifference(b.terminSuresi);
@@ -1175,8 +1374,8 @@
                             <th>Konu</th>
                             <th>Sorumlu</th>
                             <th>Termin Tarihi</th>
-                            <th>Gecikme (GÃ¼n)</th>
-                            <th>Ãncelik</th>
+                            <th>Gecikme (Gün)</th>
+                            <th>Öncelik</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -1185,7 +1384,7 @@
             overdueIssues.forEach(issue => {
                 const delayDays = calculateDaysDifference(issue.terminSuresi);
                 let oncelikBadge = 'badge-low';
-                if (issue.oncelik === 'YÃ¼ksek') oncelikBadge = 'badge-high';
+                if (issue.oncelik === 'Yüksek') oncelikBadge = 'badge-high';
                 else if (issue.oncelik === 'Orta') oncelikBadge = 'badge-medium';
 
                 html += `
@@ -1194,7 +1393,7 @@
                         <td>${issue.konu}</td>
                         <td>${issue.sorumlu}</td>
                         <td>${issue.terminSuresi}</td>
-                        <td><span class="delay-days">-${delayDays} gÃ¼n</span></td>
+                        <td><span class="delay-days">-${delayDays} gün</span></td>
                         <td><span class="badge ${oncelikBadge}">${issue.oncelik}</span></td>
                     </tr>
                 `;
@@ -1213,14 +1412,14 @@
             if (!record.terminSuresi) return '-';
 
             const today = getTodayString();
-            if (record.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
-                return 'â TamamlandÄ±';
+            if (record.durum === 'Çözüldü') {
+                return '✓ Tamamlandı';
             } else if (isDatePassed(record.terminSuresi)) {
                 const delayDays = calculateDaysDifference(record.terminSuresi);
-                return `-${delayDays} gÃ¼n`;
+                return `-${delayDays} gün`;
             } else {
                 const daysLeft = Math.ceil((new Date(record.terminSuresi) - new Date(today)) / (1000 * 60 * 60 * 24));
-                return `${daysLeft} gÃ¼n`;
+                return `${daysLeft} gün`;
             }
         }
 
@@ -1230,7 +1429,7 @@
             const altKategoriler = [...new Set(ALL_DATA.map(d => d.altKategori))].sort();
             const durumler = [...new Set(ALL_DATA.map(d => d.durum))].sort();
             const sorumlular = [...new Set(ALL_DATA.map(d => d.sorumlu).filter(s => s))].sort();
-            const oncelikler = ['YÃ¼ksek', 'Orta', 'DÃ¼ÅÃ¼k'];
+            const oncelikler = ['Yüksek', 'Orta', 'Düşük'];
 
             kategoriler.forEach(k => {
                 const option = document.createElement('option');
@@ -1291,7 +1490,13 @@
 
             dates.sort();
             const minDate = dates[0];
-            const maxDate = dates[dates.length - 1];
+            let maxDate = dates[dates.length - 1];
+            // Extend end date to at least today + 7 days
+            const todayStr = getTodayString();
+            const todayPlus7 = new Date();
+            todayPlus7.setDate(todayPlus7.getDate() + 7);
+            const todayPlus7Str = todayPlus7.toISOString().split('T')[0];
+            if (maxDate < todayPlus7Str) maxDate = todayPlus7Str;
 
             const startInput = document.getElementById('ganttStartDate');
             const endInput = document.getElementById('ganttEndDate');
@@ -1306,12 +1511,14 @@
                 ganttDateRange.start = this.value;
                 updateGanttRangeDisplay();
                 updateGantt();
+                updateTimelineSlider();
             });
 
             endInput.addEventListener('change', function() {
                 ganttDateRange.end = this.value;
                 updateGanttRangeDisplay();
                 updateGantt();
+                updateTimelineSlider();
             });
         }
 
@@ -1321,6 +1528,78 @@
             if (ganttDateRange.start && ganttDateRange.end) {
                 display.textContent = `${ganttDateRange.start} - ${ganttDateRange.end}`;
             }
+        }
+
+        // Set Gantt date range presets
+        function setGanttPreset(preset) {
+            const today = getTodayString();
+            const startInput = document.getElementById('ganttStartDate');
+            const endInput = document.getElementById('ganttEndDate');
+
+            if (preset === '1month') {
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+                const startDate = oneMonthAgo.toISOString().split('T')[0];
+                startInput.value = startDate;
+                endInput.value = today;
+                ganttDateRange.start = startDate;
+                ganttDateRange.end = today;
+            } else if (preset === '3months') {
+                const threeMonthsAgo = new Date();
+                threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+                const startDate = threeMonthsAgo.toISOString().split('T')[0];
+                startInput.value = startDate;
+                endInput.value = today;
+                ganttDateRange.start = startDate;
+                ganttDateRange.end = today;
+            } else if (preset === 'all') {
+                const dataWithDates = filteredData.filter(d => d.ilkGorulme);
+                if (dataWithDates.length > 0) {
+                    const dates = [];
+                    dataWithDates.forEach(d => {
+                        if (d.ilkGorulme) dates.push(d.ilkGorulme);
+                        if (d.cozumTarihi) dates.push(d.cozumTarihi);
+                    });
+                    dates.sort();
+                    const minDate = dates[0];
+                    let maxDate = dates[dates.length - 1];
+                    const todayPlus7 = new Date();
+                    todayPlus7.setDate(todayPlus7.getDate() + 7);
+                    const tp7Str = todayPlus7.toISOString().split('T')[0];
+                    if (maxDate < tp7Str) maxDate = tp7Str;
+                    startInput.value = minDate;
+                    endInput.value = maxDate;
+                    ganttDateRange.start = minDate;
+                    ganttDateRange.end = maxDate;
+                }
+            }
+            updateGanttRangeDisplay();
+            updateGantt();
+            updateTimelineSlider();
+        }
+
+        // Go to today
+        function goToToday() {
+            const today = getTodayString();
+            const startInput = document.getElementById('ganttStartDate');
+            const endInput = document.getElementById('ganttEndDate');
+
+            // Show a range of 2 weeks centered on today
+            const start = new Date();
+            start.setDate(start.getDate() - 7);
+            const startDate = start.toISOString().split('T')[0];
+
+            const end = new Date();
+            end.setDate(end.getDate() + 7);
+            const endDate = end.toISOString().split('T')[0];
+
+            startInput.value = startDate;
+            endInput.value = endDate;
+            ganttDateRange.start = startDate;
+            ganttDateRange.end = endDate;
+            updateGanttRangeDisplay();
+            updateGantt();
+            updateTimelineSlider();
         }
 
         // Apply filters
@@ -1361,51 +1640,79 @@
             updateCharts();
             updateTable();
             updateGantt();
+            updateTimelineSlider();
         }
 
         // Update stat cards
         function updateStats() {
             const stats = {
                 toplam: filteredData.length,
-                woc: filteredData.filter(d => d.durum === 'WOC Ä°letildi').length,
+                woc: filteredData.filter(d => d.durum === 'WOC İletildi').length,
                 beklemede: filteredData.filter(d => d.durum === 'Beklemede').length,
-                planlanÄ±yor: filteredData.filter(d => d.durum === 'PlanlanÄ±yor').length,
-                cozuldu: filteredData.filter(d => d.durum === 'ÃÃ¶zÃ¼ldÃ¼').length,
-                yuksekOncelik: filteredData.filter(d => d.oncelik === 'YÃ¼ksek').length
+                planlanıyor: filteredData.filter(d => d.durum === 'Planlanıyor').length,
+                cozuldu: filteredData.filter(d => d.durum === 'Çözüldü').length,
+                yuksekOncelik: filteredData.filter(d => d.oncelik === 'Yüksek').length
             };
 
             const statsHtml = `
-                <div class="stat-card total">
+                <div class="stat-card total ${activeStatFilter.type === 'all' ? 'active-filter' : ''}" onclick="filterByStatCard('all', null)" style="cursor:pointer">
                     <h4>Toplam Sorun</h4>
                     <div class="number">${stats.toplam}</div>
+                    ${activeStatFilter.type === 'all' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
-                <div class="stat-card woc">
-                    <h4>WOC Ä°letildi</h4>
+                <div class="stat-card woc ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'WOC İletildi' ? 'active-filter' : ''}" onclick="filterByStatCard('durum', 'WOC İletildi')" style="cursor:pointer">
+                    <h4>WOC İletildi</h4>
                     <div class="number">${stats.woc}</div>
+                    ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'WOC İletildi' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
-                <div class="stat-card pending">
+                <div class="stat-card pending ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Beklemede' ? 'active-filter' : ''}" onclick="filterByStatCard('durum', 'Beklemede')" style="cursor:pointer">
                     <h4>Beklemede</h4>
                     <div class="number">${stats.beklemede}</div>
+                    ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Beklemede' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
-                <div class="stat-card planning">
-                    <h4>PlanlanÄ±yor</h4>
-                    <div class="number">${stats.planlanÄ±yor}</div>
+                <div class="stat-card planning ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Planlanıyor' ? 'active-filter' : ''}" onclick="filterByStatCard('durum', 'Planlanıyor')" style="cursor:pointer">
+                    <h4>Planlanıyor</h4>
+                    <div class="number">${stats.planlanıyor}</div>
+                    ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Planlanıyor' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
-                <div class="stat-card resolved">
-                    <h4>ÃÃ¶zÃ¼ldÃ¼</h4>
+                <div class="stat-card resolved ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Çözüldü' ? 'active-filter' : ''}" onclick="filterByStatCard('durum', 'Çözüldü')" style="cursor:pointer">
+                    <h4>Çözüldü</h4>
                     <div class="number">${stats.cozuldu}</div>
+                    ${activeStatFilter.type === 'durum' && activeStatFilter.value === 'Çözüldü' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
-                <div class="stat-card high-priority">
-                    <h4>YÃ¼ksek Ãncelik</h4>
+                <div class="stat-card high-priority ${activeStatFilter.type === 'oncelik' && activeStatFilter.value === 'Yüksek' ? 'active-filter' : ''}" onclick="filterByStatCard('oncelik', 'Yüksek')" style="cursor:pointer">
+                    <h4>Yüksek Öncelik</h4>
                     <div class="number">${stats.yuksekOncelik}</div>
+                    ${activeStatFilter.type === 'oncelik' && activeStatFilter.value === 'Yüksek' ? '<div class="filter-dismiss" onclick="clearStatFilter(event)">✕</div>' : ''}
                 </div>
             `;
 
             document.getElementById('statsGrid').innerHTML = statsHtml;
         }
 
+        // Filter table by stat card click
+        function filterByStatCard(type, value) {
+            if (type === 'all') {
+                activeStatFilter = { type: 'all', value: null };
+            } else {
+                activeStatFilter = { type, value };
+            }
+            updateStats();
+            updateTable();
+            updateCharts();
+        }
+
+        // Clear stat card filter
+        function clearStatFilter(event) {
+            event.stopPropagation();
+            activeStatFilter = { type: null, value: null };
+            updateStats();
+            updateTable();
+            updateCharts();
+        }
+
         // Create donut chart
-        function createDonutChart(containerId, data, colors, legendId) {
+        function createDonutChart(containerId, data, colors, legendId, dataItems, groupKey) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
 
@@ -1446,11 +1753,30 @@
                     const percentage = ((d.data.value / total) * 100).toFixed(1);
                     const color = colors[d.data.label] || '#8b5cf6';
 
+                    // Get issues belonging to this slice
+                    let issuesHtml = '';
+                    if (dataItems && groupKey) {
+                        const sliceIssues = dataItems.filter(item => item[groupKey] === d.data.label).slice(0, 5);
+                        if (sliceIssues.length > 0) {
+                            issuesHtml = '<div class="tooltip-issues-list">';
+                            sliceIssues.forEach(issue => {
+                                const titleShort = issue.konu.length > 30 ? issue.konu.substring(0, 30) + '…' : issue.konu;
+                                issuesHtml += `<div class="tooltip-issue-item">${issue.id} - ${titleShort}</div>`;
+                            });
+                            if (dataItems.filter(item => item[groupKey] === d.data.label).length > 5) {
+                                const extra = dataItems.filter(item => item[groupKey] === d.data.label).length - 5;
+                                issuesHtml += `<div class="tooltip-issue-item" style="color:#9ca3af">+${extra} daha...</div>`;
+                            }
+                            issuesHtml += '</div>';
+                        }
+                    }
+
                     showTooltip(event, `<div class="tooltip-content">
-                        <div class="tooltip-header" style="border-color:${color}">${d.data.label}</div>
-                        <div class="tooltip-row"><span class="tooltip-label">Sorun SayÄ±sÄ±</span><span class="tooltip-value" style="font-size:15px">${d.data.value}</span></div>
+                        <div class="tooltip-header" style="border-color:${color}"><div style="display:inline-block;width:8px;height:8px;background:${color};border-radius:50%;margin-right:6px;vertical-align:middle"></div>${d.data.label}</div>
+                        <div class="tooltip-row"><span class="tooltip-label">Sorun Sayısı</span><span class="tooltip-value" style="font-size:15px">${d.data.value}</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Oran</span><span class="tooltip-value">${percentage}%</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Toplam</span><span style="color:#8892b0">${total} sorun</span></div>
+                        ${issuesHtml}
                     </div>`);
                 })
                 .on('mousemove', function(event) {
@@ -1494,18 +1820,26 @@
 
         // Update charts
         function updateCharts() {
+            // Apply stat card filter to chart data
+            let chartData = filteredData;
+            if (activeStatFilter.type === 'durum') {
+                chartData = filteredData.filter(d => d.durum === activeStatFilter.value);
+            } else if (activeStatFilter.type === 'oncelik') {
+                chartData = filteredData.filter(d => d.oncelik === activeStatFilter.value);
+            }
+
             // Durum chart
-            const durumData = d3.rollup(filteredData, v => v.length, d => d.durum);
+            const durumData = d3.rollup(chartData, v => v.length, d => d.durum);
             const durumChartData = Array.from(durumData, ([label, value]) => ({label, value}));
-            createDonutChart('durumChart', durumChartData, durumColors, 'durumLegend');
+            createDonutChart('durumChart', durumChartData, durumColors, 'durumLegend', chartData, 'durum');
 
             // Kategori chart
-            const kategoriData = d3.rollup(filteredData, v => v.length, d => d.kategori);
+            const kategoriData = d3.rollup(chartData, v => v.length, d => d.kategori);
             const kategoriChartData = Array.from(kategoriData, ([label, value]) => ({label, value}));
-            createDonutChart('kategoriChart', kategoriChartData, kategoriColors, 'kategoriLegend');
+            createDonutChart('kategoriChart', kategoriChartData, kategoriColors, 'kategoriLegend', chartData, 'kategori');
 
             // Sorumlu chart
-            const sorumluData = d3.rollup(filteredData.filter(d => d.sorumlu), v => v.length, d => d.sorumlu);
+            const sorumluData = d3.rollup(chartData.filter(d => d.sorumlu), v => v.length, d => d.sorumlu);
             const sorumluChartData = Array.from(sorumluData, ([label, value]) => ({label, value}))
                 .sort((a, b) => b.value - a.value)
                 .slice(0, 8);
@@ -1514,10 +1848,10 @@
             sorumluChartData.forEach((item, i) => {
                 sorumluColors[item.label] = colorPalette[i % colorPalette.length];
             });
-            createDonutChart('sorumluChart', sorumluChartData, sorumluColors, 'sorumluLegend');
+            createDonutChart('sorumluChart', sorumluChartData, sorumluColors, 'sorumluLegend', chartData, 'sorumlu');
 
             // Alt Kategori chart
-            const altKategoriData = d3.rollup(filteredData, v => v.length, d => d.altKategori);
+            const altKategoriData = d3.rollup(chartData, v => v.length, d => d.altKategori);
             const altKategoriChartData = Array.from(altKategoriData, ([label, value]) => ({label, value}))
                 .sort((a, b) => b.value - a.value)
                 .slice(0, 8);
@@ -1525,7 +1859,17 @@
             altKategoriChartData.forEach((item, i) => {
                 altKategoriColors[item.label] = colorPalette[i % colorPalette.length];
             });
-            createDonutChart('altKategoriChart', altKategoriChartData, altKategoriColors, 'altKategoriLegend');
+            createDonutChart('altKategoriChart', altKategoriChartData, altKategoriColors, 'altKategoriLegend', chartData, 'altKategori');
+
+            // Priority (Öncelik) chart
+            const oncelikData = d3.rollup(chartData, v => v.length, d => d.oncelik);
+            const oncelikChartData = Array.from(oncelikData, ([label, value]) => ({label, value}));
+            const oncelikColors = {
+                'Yüksek': '#ef4444',
+                'Orta': '#f59e0b',
+                'Düşük': '#3b82f6'
+            };
+            createDonutChart('oncelikChart', oncelikChartData, oncelikColors, 'oncelikLegend', chartData, 'oncelik');
         }
 
         // Update table
@@ -1533,25 +1877,46 @@
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
 
-            filteredData.forEach(record => {
+            // Apply stat card filter
+            let tableData = filteredData;
+            if (activeStatFilter.type === 'durum') {
+                tableData = filteredData.filter(d => d.durum === activeStatFilter.value);
+            } else if (activeStatFilter.type === 'oncelik') {
+                tableData = filteredData.filter(d => d.oncelik === activeStatFilter.value);
+            }
+
+            tableData.forEach(record => {
                 const row = document.createElement('tr');
 
                 let durumBadge = 'badge-pending';
-                if (record.durum === 'WOC Ä°letildi') durumBadge = 'badge-woc';
-                else if (record.durum === 'PlanlanÄ±yor') durumBadge = 'badge-planning';
-                else if (record.durum === 'ÃÃ¶zÃ¼ldÃ¼') durumBadge = 'badge-resolved';
+                if (record.durum === 'WOC İletildi') durumBadge = 'badge-woc';
+                else if (record.durum === 'Planlanıyor') durumBadge = 'badge-planning';
+                else if (record.durum === 'Çözüldü') durumBadge = 'badge-resolved';
 
                 let oncelikBadge = 'badge-low';
-                if (record.oncelik === 'YÃ¼ksek') oncelikBadge = 'badge-high';
+                if (record.oncelik === 'Yüksek') oncelikBadge = 'badge-high';
                 else if (record.oncelik === 'Orta') oncelikBadge = 'badge-medium';
 
                 const remainingDaysCell = getRemainingDaysCell(record);
                 let remainingDaysClass = 'remaining-days-cell';
-                if (remainingDaysCell.includes('TamamlandÄ±')) {
+                if (remainingDaysCell.includes('Tamamlandı')) {
                     remainingDaysClass += ' remaining-days-completed';
-                } else if (remainingDaysCell.includes('-') && remainingDaysCell.includes('gÃ¼n')) {
+                } else if (remainingDaysCell.includes('-') && remainingDaysCell.includes('gün')) {
                     remainingDaysClass += ' remaining-days-negative';
                 }
+
+                // Add priority-based left border color
+                let rowBorderColor = '#3b82f6'; // Düşük - blue
+                let rowBgClass = '';
+                if (record.oncelik === 'Yüksek') {
+                    rowBorderColor = '#ef4444'; // red
+                    rowBgClass = ' high-priority-row';
+                } else if (record.oncelik === 'Orta') {
+                    rowBorderColor = '#f59e0b'; // orange
+                }
+
+                row.style.borderLeft = `4px solid ${rowBorderColor}`;
+                row.className = `priority-border${rowBgClass}`;
 
                 row.innerHTML = `
                     <td><strong>${record.id}</strong></td>
@@ -1601,7 +1966,7 @@
             }
 
             if (dataWithDates.length === 0) {
-                container.innerHTML = '<p style="color: #a0aec0; text-align: center; padding: 40px;">Tarih verisi bulunamadÄ±</p>';
+                container.innerHTML = '<p style="color: #a0aec0; text-align: center; padding: 40px;">Tarih verisi bulunamadı</p>';
                 return;
             }
 
@@ -1635,9 +2000,38 @@
                 .range([0, height])
                 .padding(0.5);
 
+            // Draw global deadline vertical lines (across full height)
+            const uniqueDeadlines = [...new Set(dataWithDates.filter(d => d.deadline).map(d => d.terminSuresi))];
+            svg.selectAll('line.deadline-global-line')
+                .data(uniqueDeadlines)
+                .enter()
+                .append('line')
+                .attr('class', 'deadline-global-line')
+                .attr('x1', d => xScale(parseDate(d)))
+                .attr('y1', -10)
+                .attr('x2', d => xScale(parseDate(d)))
+                .attr('y2', height)
+                .attr('stroke', '#ef4444')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '5,3')
+                .attr('opacity', 0.4);
+
+            // Draw triangle at top of deadline line
+            svg.selectAll('path.deadline-top-marker')
+                .data(uniqueDeadlines)
+                .enter()
+                .append('path')
+                .attr('class', 'deadline-top-marker')
+                .attr('d', d => {
+                    const x = xScale(parseDate(d));
+                    return `M${x},0 L${x-5},-10 L${x+5},-10 Z`;
+                })
+                .attr('fill', '#ef4444')
+                .attr('opacity', 0.7);
+
             // Draw deadline zones (shaded area from deadline to bar end for overdue items)
             svg.selectAll('rect.deadline-zone')
-                .data(dataWithDates.filter(d => d.deadline && d.end > d.deadline && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼'))
+                .data(dataWithDates.filter(d => d.deadline && d.end > d.deadline && d.durum !== 'Çözüldü'))
                 .enter()
                 .append('rect')
                 .attr('class', 'deadline-zone')
@@ -1661,31 +2055,31 @@
                 .attr('height', yScale.bandwidth())
                 .attr('rx', 3)
                 .attr('fill', d => {
-                    if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') return '#10b981';
-                    if (d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼') return '#ef4444';
+                    if (d.durum === 'Çözüldü') return '#10b981';
+                    if (d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'Çözüldü') return '#ef4444';
                     return durumColors[d.durum] || '#8b5cf6';
                 })
-                .style('opacity', d => d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? 0.6 : 0.8)
+                .style('opacity', d => d.durum === 'Çözüldü' ? 0.6 : 0.8)
                 .style('cursor', 'pointer')
                 .on('mouseover', function(event, d) {
                     d3.select(this).style('opacity', 1).attr('stroke', '#fff').attr('stroke-width', 1.5);
                     const days = Math.ceil((d.end - d.start) / (1000 * 60 * 60 * 24));
                     const s = getTerminStatus(d);
-                    const durumColor = d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? '#10b981' : (d.terminSuresi && isDatePassed(d.terminSuresi) ? '#ef4444' : '#60a5fa');
+                    const durumColor = d.durum === 'Çözüldü' ? '#10b981' : (d.terminSuresi && isDatePassed(d.terminSuresi) ? '#ef4444' : '#60a5fa');
                     let t = `<div class="tooltip-content">
-                        <div class="tooltip-header">${d.id} â ${d.konu}</div>
+                        <div class="tooltip-header">${d.id} — ${d.konu}</div>
                         <div class="tooltip-row"><span class="tooltip-label">Durum</span><span class="tooltip-badge" style="background:${durumColor}22;color:${durumColor};border:1px solid ${durumColor}44">${d.durum}</span></div>
-                        <div class="tooltip-row"><span class="tooltip-label">Ãncelik</span><span class="tooltip-value">${d.oncelik}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Öncelik</span><span class="tooltip-value">${d.oncelik}</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Kategori</span><span class="tooltip-value">${d.kategori}</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Sorumlu</span><span class="tooltip-value">${d.sorumlu}</span></div>
-                        <div class="tooltip-row"><span class="tooltip-label">BaÅlangÄ±Ã§</span><span class="tooltip-value">${d.ilkGorulme}</span></div>
-                        <div class="tooltip-row"><span class="tooltip-label">BitiÅ</span><span class="tooltip-value">${d.cozumTarihi || 'Devam ediyor'}</span></div>
-                        <div class="tooltip-row"><span class="tooltip-label">SÃ¼re</span><span class="tooltip-value">${days} gÃ¼n</span></div>`;
+                        <div class="tooltip-row"><span class="tooltip-label">Başlangıç</span><span class="tooltip-value">${d.ilkGorulme}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Bitiş</span><span class="tooltip-value">${d.cozumTarihi || 'Devam ediyor'}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Süre</span><span class="tooltip-value">${days} gün</span></div>`;
                     if (d.terminSuresi) {
                         t += `<div class="tooltip-row"><span class="tooltip-label">Termin</span><span class="tooltip-value">${d.terminSuresi}</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Termin Durumu</span><span class="${s.cls === 'overdue' ? 'tooltip-overdue' : s.cls === 'ontime' ? 'tooltip-ontime' : 'tooltip-value'}">${s.text}</span></div>`;
                     } else {
-                        t += `<div class="tooltip-row"><span class="tooltip-label">Termin</span><span style="color:#9ca3af">TanÄ±msÄ±z</span></div>`;
+                        t += `<div class="tooltip-row"><span class="tooltip-label">Termin</span><span style="color:#9ca3af">Tanımsız</span></div>`;
                     }
                     t += '</div>';
                     showTooltip(event, t);
@@ -1697,11 +2091,11 @@
                 })
                 .on('mouseout', function() {
                     const d = d3.select(this).datum();
-                    d3.select(this).style('opacity', d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? 0.6 : 0.8).attr('stroke', 'none');
+                    d3.select(this).style('opacity', d.durum === 'Çözüldü' ? 0.6 : 0.8).attr('stroke', 'none');
                     hideTooltip();
                 });
 
-            // Draw today line
+            // Draw today line (solid red line)
             const todayDate = new Date();
             const todayX = xScale(todayDate);
             if (todayX >= 0 && todayX <= width) {
@@ -1710,16 +2104,24 @@
                     .attr('y1', 0)
                     .attr('x2', todayX)
                     .attr('y2', height)
-                    .attr('stroke', '#a0aec0')
-                    .attr('stroke-dasharray', '4,4')
-                    .attr('opacity', 0.5);
+                    .attr('stroke', '#ef4444')
+                    .attr('stroke-width', 2.5)
+                    .attr('opacity', 0.8);
+
+                // Triangle at top
+                svg.append('path')
+                    .attr('d', `M${todayX},0 L${todayX-6},-12 L${todayX+6},-12 Z`)
+                    .attr('fill', '#ef4444')
+                    .attr('opacity', 0.9);
 
                 svg.append('text')
                     .attr('x', todayX)
-                    .attr('y', -5)
-                    .attr('fill', '#a0aec0')
-                    .attr('font-size', '11px')
-                    .text('BugÃ¼n');
+                    .attr('y', -20)
+                    .attr('fill', '#ef4444')
+                    .attr('font-size', '12px')
+                    .attr('font-weight', '700')
+                    .attr('text-anchor', 'middle')
+                    .text('Bugün');
             }
 
             // Draw deadline markers (diamond + dashed line)
@@ -1776,7 +2178,7 @@
                     const s = getTerminStatus(d);
                     showTooltip(event, `<div class="tooltip-content">
                         <div class="tooltip-header">Termin: ${d.terminSuresi}</div>
-                        <div class="tooltip-row"><span class="tooltip-label">Sorun</span><span class="tooltip-value">${d.id} â ${d.konu}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Sorun</span><span class="tooltip-value">${d.id} — ${d.konu}</span></div>
                         <div class="tooltip-row"><span class="tooltip-label">Durum</span><span class="${s.cls === 'overdue' ? 'tooltip-overdue' : s.cls === 'ontime' ? 'tooltip-ontime' : 'tooltip-value'}">${s.text}</span></div>
                     </div>`);
                 })
@@ -1800,8 +2202,8 @@
                 .attr('fill', '#cbd5e0')
                 .attr('font-size', '11px')
                 .text(d => {
-                    const short = d.konu.length > 18 ? d.konu.substring(0, 18) + 'â¦' : d.konu;
-                    return d.id + ' â ' + short;
+                    const short = d.konu.length > 18 ? d.konu.substring(0, 18) + '…' : d.konu;
+                    return d.id + ' — ' + short;
                 });
 
             // Add axes
@@ -1816,24 +2218,199 @@
                 .style('color', '#cbd5e0');
         }
 
+        // Interactive timeline range slider for Gantt
+        function updateTimelineSlider() {
+            const sliderContainer = document.getElementById('ganttTimelineSlider');
+            if (!sliderContainer) return;
+            sliderContainer.innerHTML = '';
+
+            const parseDate = d3.timeParse('%Y-%m-%d');
+            const formatDate = d3.timeFormat('%Y-%m-%d');
+            const formatLabel = d3.timeFormat('%d %b %Y');
+
+            // Get full data range
+            let dataWithDates = filteredData.filter(d => d.ilkGorulme);
+            if (dataWithDates.length === 0) return;
+
+            const allStarts = dataWithDates.map(d => parseDate(d.ilkGorulme)).filter(Boolean);
+            const allEnds = dataWithDates.map(d => d.cozumTarihi ? parseDate(d.cozumTarihi) : new Date()).filter(Boolean);
+
+            const globalMin = d3.min(allStarts);
+            const globalMax = d3.max(allEnds);
+            // Extend globalMax by 30 days into the future
+            const futureMax = new Date(Math.max(globalMax, new Date()));
+            futureMax.setDate(futureMax.getDate() + 30);
+
+            const today = new Date();
+            const todayStr = formatDate(today);
+
+            const margin = { left: 40, right: 40 };
+            const svgWidth = sliderContainer.clientWidth || 950;
+            const trackWidth = svgWidth - margin.left - margin.right;
+            const trackHeight = 20;
+            const svgHeight = 50;
+
+            const xScale = d3.scaleTime()
+                .domain([globalMin, futureMax])
+                .range([0, trackWidth]);
+
+            const svg = d3.select(sliderContainer)
+                .append('svg')
+                .attr('width', svgWidth)
+                .attr('height', svgHeight);
+
+            const g = svg.append('g')
+                .attr('transform', `translate(${margin.left}, 10)`);
+
+            // Background track
+            g.append('rect')
+                .attr('class', 'gantt-slider-track')
+                .attr('x', 0).attr('y', 0)
+                .attr('width', trackWidth).attr('height', trackHeight);
+
+            // Mini bars for context (show data density)
+            dataWithDates.forEach(d => {
+                const start = parseDate(d.ilkGorulme);
+                const end = d.cozumTarihi ? parseDate(d.cozumTarihi) : new Date();
+                if (!start) return;
+                const x1 = Math.max(0, xScale(start));
+                const x2 = Math.min(trackWidth, xScale(end));
+                g.append('rect')
+                    .attr('x', x1).attr('y', 3)
+                    .attr('width', Math.max(1, x2 - x1)).attr('height', trackHeight - 6)
+                    .attr('fill', d.durum === 'Çözüldü' ? '#10b981' : (d.durum === 'Beklemede' ? '#3b82f6' : '#f59e0b'))
+                    .attr('opacity', 0.15).attr('rx', 1);
+            });
+
+            // Today marker
+            if (today >= globalMin && today <= futureMax) {
+                g.append('line')
+                    .attr('class', 'gantt-slider-today')
+                    .attr('x1', xScale(today)).attr('y1', -2)
+                    .attr('x2', xScale(today)).attr('y2', trackHeight + 2);
+                g.append('text')
+                    .attr('x', xScale(today)).attr('y', trackHeight + 14)
+                    .attr('class', 'gantt-slider-label')
+                    .attr('fill', '#10b981')
+                    .text('Bugün');
+            }
+
+            // Selected range overlay
+            const startDate = ganttDateRange.start ? parseDate(ganttDateRange.start) : globalMin;
+            const endDate = ganttDateRange.end ? parseDate(ganttDateRange.end) : futureMax;
+
+            let selX1 = Math.max(0, xScale(startDate));
+            let selX2 = Math.min(trackWidth, xScale(endDate));
+
+            const selectedRect = g.append('rect')
+                .attr('class', 'gantt-slider-selected')
+                .attr('x', selX1).attr('y', 0)
+                .attr('width', selX2 - selX1).attr('height', trackHeight);
+
+            // Left handle
+            const leftHandle = g.append('rect')
+                .attr('class', 'gantt-slider-handle')
+                .attr('x', selX1 - 4).attr('y', -2)
+                .attr('width', 8).attr('height', trackHeight + 4)
+                .attr('rx', 3);
+
+            // Right handle
+            const rightHandle = g.append('rect')
+                .attr('class', 'gantt-slider-handle')
+                .attr('x', selX2 - 4).attr('y', -2)
+                .attr('width', 8).attr('height', trackHeight + 4)
+                .attr('rx', 3);
+
+            // Date labels
+            const leftLabel = g.append('text')
+                .attr('class', 'gantt-slider-label')
+                .attr('x', selX1).attr('y', trackHeight + 14)
+                .text(formatLabel(startDate));
+
+            const rightLabel = g.append('text')
+                .attr('class', 'gantt-slider-label')
+                .attr('x', selX2).attr('y', trackHeight + 14)
+                .text(formatLabel(endDate));
+
+            // Tick marks on track
+            const ticks = xScale.ticks(d3.timeMonth.every(1));
+            ticks.forEach(t => {
+                g.append('line')
+                    .attr('x1', xScale(t)).attr('y1', trackHeight)
+                    .attr('x2', xScale(t)).attr('y2', trackHeight + 3)
+                    .attr('stroke', '#4a5568').attr('stroke-width', 1);
+            });
+
+            // Drag behavior for left handle
+            function updateFromDrag() {
+                const newStart = formatDate(xScale.invert(selX1));
+                const newEnd = formatDate(xScale.invert(selX2));
+                ganttDateRange.start = newStart;
+                ganttDateRange.end = newEnd;
+                document.getElementById('ganttStartDate').value = newStart;
+                document.getElementById('ganttEndDate').value = newEnd;
+                updateGanttRangeDisplay();
+                updateGantt();
+            }
+
+            leftHandle.call(d3.drag()
+                .on('drag', function(event) {
+                    let newX = Math.max(0, Math.min(selX2 - 20, event.x));
+                    selX1 = newX;
+                    leftHandle.attr('x', selX1 - 4);
+                    selectedRect.attr('x', selX1).attr('width', selX2 - selX1);
+                    leftLabel.attr('x', selX1).text(formatLabel(xScale.invert(selX1)));
+                })
+                .on('end', updateFromDrag));
+
+            rightHandle.call(d3.drag()
+                .on('drag', function(event) {
+                    let newX = Math.max(selX1 + 20, Math.min(trackWidth, event.x));
+                    selX2 = newX;
+                    rightHandle.attr('x', selX2 - 4);
+                    selectedRect.attr('width', selX2 - selX1);
+                    rightLabel.attr('x', selX2).text(formatLabel(xScale.invert(selX2)));
+                })
+                .on('end', updateFromDrag));
+
+            // Drag the selected range to pan
+            selectedRect.call(d3.drag()
+                .on('drag', function(event) {
+                    const dx = event.dx;
+                    const w = selX2 - selX1;
+                    let newX1 = selX1 + dx;
+                    let newX2 = selX2 + dx;
+                    if (newX1 < 0) { newX1 = 0; newX2 = w; }
+                    if (newX2 > trackWidth) { newX2 = trackWidth; newX1 = trackWidth - w; }
+                    selX1 = newX1;
+                    selX2 = newX2;
+                    selectedRect.attr('x', selX1).attr('width', selX2 - selX1);
+                    leftHandle.attr('x', selX1 - 4);
+                    rightHandle.attr('x', selX2 - 4);
+                    leftLabel.attr('x', selX1).text(formatLabel(xScale.invert(selX1)));
+                    rightLabel.attr('x', selX2).text(formatLabel(xScale.invert(selX2)));
+                })
+                .on('end', updateFromDrag));
+        }
+
         // Termin Report Modal
         function getTerminStatus(d) {
             const today = getTodayString();
-            if (!d.terminSuresi) return { text: 'Termin TanÄ±msÄ±z', cls: 'noterm', days: null };
-            if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
-                if (d.cozumTarihi && d.cozumTarihi <= d.terminSuresi) return { text: 'ZamanÄ±nda', cls: 'ontime', days: 0 };
+            if (!d.terminSuresi) return { text: 'Termin Tanımsız', cls: 'noterm', days: null };
+            if (d.durum === 'Çözüldü') {
+                if (d.cozumTarihi && d.cozumTarihi <= d.terminSuresi) return { text: 'Zamanında', cls: 'ontime', days: 0 };
                 if (d.cozumTarihi && d.cozumTarihi > d.terminSuresi) {
                     const delay = Math.ceil((new Date(d.cozumTarihi) - new Date(d.terminSuresi)) / (1000*60*60*24));
-                    return { text: delay + ' gÃ¼n geÃ§', cls: 'overdue', days: -delay };
+                    return { text: delay + ' gün geç', cls: 'overdue', days: -delay };
                 }
-                return { text: 'ZamanÄ±nda', cls: 'ontime', days: 0 };
+                return { text: 'Zamanında', cls: 'ontime', days: 0 };
             }
             if (isDatePassed(d.terminSuresi)) {
                 const delay = calculateDaysDifference(d.terminSuresi);
-                return { text: delay + ' gÃ¼n gecikmiÅ', cls: 'overdue', days: -delay };
+                return { text: delay + ' gün gecikmiş', cls: 'overdue', days: -delay };
             }
             const left = Math.ceil((new Date(d.terminSuresi) - new Date(today)) / (1000*60*60*24));
-            return { text: left + ' gÃ¼n kaldÄ±', cls: 'pending', days: left };
+            return { text: left + ' gün kaldı', cls: 'pending', days: left };
         }
 
         function openTerminReport() {
@@ -1857,31 +2434,31 @@
 
             let html = '<div class="report-summary-grid">';
             html += `<div class="report-summary-card"><div class="value" style="color:#e2e8f0">${filteredData.length}</div><div class="label">Toplam Sorun</div></div>`;
-            html += `<div class="report-summary-card"><div class="value" style="color:#10b981">${ontime}</div><div class="label">ZamanÄ±nda (${withTermin > 0 ? Math.round(ontime/withTermin*100) : 0}%)</div></div>`;
-            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${overdue}</div><div class="label">GecikmiÅ (${withTermin > 0 ? Math.round(overdue/withTermin*100) : 0}%)</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#10b981">${ontime}</div><div class="label">Zamanında (${withTermin > 0 ? Math.round(ontime/withTermin*100) : 0}%)</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${overdue}</div><div class="label">Gecikmiş (${withTermin > 0 ? Math.round(overdue/withTermin*100) : 0}%)</div></div>`;
             html += `<div class="report-summary-card"><div class="value" style="color:#f59e0b">${pending}</div><div class="label">Bekliyor</div></div>`;
-            html += `<div class="report-summary-card"><div class="value" style="color:#9ca3af">${noterm}</div><div class="label">Termin TanÄ±msÄ±z</div></div>`;
-            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${avgDelay} gÃ¼n</div><div class="label">Ort. Gecikme</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#9ca3af">${noterm}</div><div class="label">Termin Tanımsız</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${avgDelay} gün</div><div class="label">Ort. Gecikme</div></div>`;
             html += '</div>';
 
             // Overdue items table
             const overdueItems = items.filter(i => i.terminStatus.cls === 'overdue').sort((a,b) => a.terminStatus.days - b.terminStatus.days);
             if (overdueItems.length > 0) {
-                html += '<div class="report-section-title" style="color:#ef4444;">GecikmiÅ Sorunlar (' + overdueItems.length + ')</div>';
+                html += '<div class="report-section-title" style="color:#ef4444;">Gecikmiş Sorunlar (' + overdueItems.length + ')</div>';
                 html += buildReportTable(overdueItems);
             }
 
             // Pending items table
             const pendingItems = items.filter(i => i.terminStatus.cls === 'pending').sort((a,b) => a.terminStatus.days - b.terminStatus.days);
             if (pendingItems.length > 0) {
-                html += '<div class="report-section-title" style="color:#f59e0b;">Termini YaklaÅanlar (' + pendingItems.length + ')</div>';
+                html += '<div class="report-section-title" style="color:#f59e0b;">Termini Yaklaşanlar (' + pendingItems.length + ')</div>';
                 html += buildReportTable(pendingItems);
             }
 
             // On-time items
             const ontimeItems = items.filter(i => i.terminStatus.cls === 'ontime');
             if (ontimeItems.length > 0) {
-                html += '<div class="report-section-title" style="color:#10b981;">ZamanÄ±nda Tamamlanan (' + ontimeItems.length + ')</div>';
+                html += '<div class="report-section-title" style="color:#10b981;">Zamanında Tamamlanan (' + ontimeItems.length + ')</div>';
                 html += buildReportTable(ontimeItems);
             }
 
@@ -1890,7 +2467,7 @@
         }
 
         function buildReportTable(items) {
-            let t = '<table class="report-table"><thead><tr><th>ID</th><th>Konu</th><th>Sorumlu</th><th>Ãncelik</th><th>Termin</th><th>Durum</th></tr></thead><tbody>';
+            let t = '<table class="report-table"><thead><tr><th>ID</th><th>Konu</th><th>Sorumlu</th><th>Öncelik</th><th>Termin</th><th>Durum</th></tr></thead><tbody>';
             items.forEach(d => {
                 const s = d.terminStatus;
                 t += `<tr>
@@ -1912,7 +2489,7 @@
 
         function downloadReportCSV() {
             const today = getTodayString();
-            let csv = 'ID,Konu,Kategori,Durum,Ãncelik,Sorumlu,Ä°lk GÃ¶rÃ¼lme,ÃÃ¶zÃ¼m Tarihi,Termin SÃ¼resi,Durum Detay\n';
+            let csv = 'ID,Konu,Kategori,Durum,Öncelik,Sorumlu,İlk Görülme,Çözüm Tarihi,Termin Süresi,Durum Detay\n';
             filteredData.forEach(d => {
                 const s = getTerminStatus(d);
                 csv += [d.id, `"${d.konu.replace(/"/g,'""')}"`, d.kategori, d.durum, d.oncelik, d.sorumlu, d.ilkGorulme||'', d.cozumTarihi||'', d.terminSuresi||'', s.text].join(',') + '\n';
@@ -1931,6 +2508,51 @@
         document.getElementById('reportModal').addEventListener('click', function(e) {
             if (e.target === this) closeTerminReport();
         });
+
+        // Export table to CSV
+        function exportTableToCSV() {
+            // Collect table data
+            let tableData = filteredData;
+            if (activeStatFilter.type === 'durum') {
+                tableData = filteredData.filter(d => d.durum === activeStatFilter.value);
+            } else if (activeStatFilter.type === 'oncelik') {
+                tableData = filteredData.filter(d => d.oncelik === activeStatFilter.value);
+            }
+
+            // Create CSV headers (Turkish)
+            const headers = ['ID', 'Konu', 'Kategori', 'Alt Kategori', 'Durum', 'Öncelik', 'Sorumlu', 'İlk Görülme', 'Çözüm Tarihi', 'Termin Süresi', 'Kalan Gün'];
+
+            // Create CSV rows
+            let csv = headers.map(h => `"${h}"`).join(',') + '\n';
+
+            tableData.forEach(record => {
+                const remainingDays = getRemainingDaysCell(record);
+                const row = [
+                    record.id,
+                    record.konu,
+                    record.kategori,
+                    record.altKategori,
+                    record.durum,
+                    record.oncelik,
+                    record.sorumlu || '',
+                    record.ilkGorulme || '',
+                    record.cozumTarihi || '',
+                    record.terminSuresi || '',
+                    remainingDays
+                ];
+                csv += row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',') + '\n';
+            });
+
+            // Create and download file
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `erp-sorunlar-${new Date().toISOString().split('T')[0]}.csv`;
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
 
         // Tooltip functions
         function showTooltip(event, content) {
@@ -1951,25 +2573,31 @@
             var loadText = document.getElementById('loadingText');
             try {
                 overlay.style.display = 'flex';
-                loadText.textContent = 'Notion\'dan veriler Ã§ekiliyor...';
+                loadText.textContent = 'Notion\'dan veriler çekiliyor...';
                 var resp = await fetch('/.netlify/functions/notion-data');
                 if (resp.ok) {
                     var data = await resp.json();
                     if (Array.isArray(data) && data.length > 0) {
                         ALL_DATA = data;
-                        loadText.textContent = data.length + ' kayÄ±t yÃ¼klendi!';
-                        document.getElementById('updateInfo').innerHTML = 'CanlÄ± Notion verisi Â· Son gÃ¼ncelleme: ' + new Date().toLocaleString('tr-TR');
+                        ALL_DATA.sort((a, b) => {
+                            const na = parseInt(a.id.replace('ERP-', '')) || 0;
+                            const nb = parseInt(b.id.replace('ERP-', '')) || 0;
+                            return na - nb;
+                        });
+                        loadText.textContent = data.length + ' kayıt yüklendi!';
+                        document.getElementById('updateInfo').innerHTML = 'Canlı Notion verisi · Son güncelleme: ' + new Date().toLocaleString('tr-TR');
                     } else if (data.error) {
-                        loadText.textContent = 'Notion baÄlantÄ±sÄ± kurulamadÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
-                        document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+                        loadText.textContent = 'Notion bağlantısı kurulamadı, önbellek verisi kullanılıyor...';
+                        document.getElementById('updateInfo').innerHTML = 'Önbellek verisi · ' + new Date().toLocaleString('tr-TR');
                     }
                 } else {
-                    loadText.textContent = 'BaÄlantÄ± hatasÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
-                    document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+                    loadText.textContent = 'Bağlantı hatası, önbellek verisi kullanılıyor...';
+                    document.getElementById('updateInfo').innerHTML = 'Önbellek verisi · ' + new Date().toLocaleString('tr-TR');
                 }
             } catch(e) {
-                loadText.textContent = 'BaÄlantÄ± hatasÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
-                document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+                console.error('Notion API hatası:', e.message);
+                loadText.textContent = 'Bağlantı hatası, önbellek verisi kullanılıyor...';
+                document.getElementById('updateInfo').innerHTML = 'Önbellek verisi · ' + new Date().toLocaleString('tr-TR');
             }
             filteredData = [...ALL_DATA];
             initializeFilters();
