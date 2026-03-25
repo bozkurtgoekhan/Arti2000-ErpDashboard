@@ -1,0 +1,1984 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP Sorun Takip Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            margin-bottom: 40px;
+            padding-bottom: 30px;
+            border-bottom: 2px solid #2d3148;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+
+        .filters-section {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        .filters-section h3 {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            color: #e2e8f0;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            color: #cbd5e0;
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            border: 1px solid #2d3148;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group select:hover {
+            border-color: #4299e1;
+            background-color: #1a202c;
+        }
+
+        .filter-group select:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .reset-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            align-self: flex-end;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a202c 0%, #2d3148 100%);
+            border-left: 4px solid #60a5fa;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .stat-card.total { border-left-color: #60a5fa; }
+        .stat-card.woc { border-left-color: #f59e0b; }
+        .stat-card.pending { border-left-color: #3b82f6; }
+        .stat-card.planning { border-left-color: #a78bfa; }
+        .stat-card.resolved { border-left-color: #10b981; }
+        .stat-card.high-priority { border-left-color: #ef4444; }
+        .stat-card.on-time { border-left-color: #10b981; }
+        .stat-card.delayed { border-left-color: #ef4444; }
+        .stat-card.awaiting { border-left-color: #f59e0b; }
+        .stat-card.no-deadline { border-left-color: #6b7280; }
+        .stat-card.avg-delay { border-left-color: #ef4444; }
+
+        .stat-card h4 {
+            color: #a0aec0;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .stat-card .percentage {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-top: 8px;
+        }
+
+        .deadline-section {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .deadline-section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .deadline-section h3 {
+            font-size: 1.3rem;
+            color: #e2e8f0;
+        }
+
+        .csv-export-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .csv-export-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .deadline-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .overdue-section {
+            background: #1a202c;
+            border: 1px solid #ef4444;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.2);
+        }
+
+        .overdue-section h3 {
+            font-size: 1.3rem;
+            color: #e2e8f0;
+            margin-bottom: 25px;
+        }
+
+        .overdue-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .overdue-table thead {
+            background: #0f1117;
+        }
+
+        .overdue-table th {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #ef4444;
+            color: #ef4444;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .overdue-table td {
+            padding: 15px;
+            border-bottom: 1px solid #2d3148;
+            color: #cbd5e0;
+            font-size: 0.9rem;
+        }
+
+        .overdue-table tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        .overdue-table tbody tr:hover {
+            background-color: rgba(239, 68, 68, 0.1);
+        }
+
+        .overdue-table tbody tr:nth-child(odd) {
+            background-color: rgba(45, 49, 72, 0.3);
+        }
+
+        .delay-days {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .no-overdue-message {
+            color: #10b981;
+            text-align: center;
+            padding: 40px;
+            font-size: 1.1rem;
+        }
+
+        .charts-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-container {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .chart-container h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #e2e8f0;
+            text-align: center;
+        }
+
+        .chart-canvas {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 420px;
+        }
+
+        .legend {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            font-size: 0.85rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .legend-color {
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        svg {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .gantt-section {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+
+        .gantt-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #e2e8f0;
+        }
+
+        .gantt-controls {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .date-range-slider {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .date-range-slider label {
+            font-size: 0.9rem;
+            color: #cbd5e0;
+            white-space: nowrap;
+        }
+
+        .date-range-slider input[type="date"] {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            border: 1px solid #2d3148;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .date-range-slider input[type="date"]:focus {
+            outline: none;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
+        }
+
+        .gantt-range-display {
+            font-size: 0.9rem;
+            color: #a0aec0;
+            white-space: nowrap;
+        }
+
+        .gantt-canvas {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .table-section {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            margin-bottom: 40px;
+        }
+
+        .table-section h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: #e2e8f0;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            background: #0f1117;
+            z-index: 10;
+        }
+
+        th {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 2px solid #2d3148;
+            color: #cbd5e0;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #2d3148;
+            color: #cbd5e0;
+            font-size: 0.9rem;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background-color: #2d3148;
+            cursor: pointer;
+        }
+
+        tbody tr:nth-child(odd) {
+            background-color: rgba(45, 49, 72, 0.3);
+        }
+
+        .remaining-days-cell {
+            font-weight: 600;
+        }
+
+        .remaining-days-completed {
+            color: #10b981;
+        }
+
+        .remaining-days-negative {
+            color: #ef4444;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .badge-woc {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+
+        .badge-pending {
+            background-color: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+            border: 1px solid #3b82f6;
+        }
+
+        .badge-planning {
+            background-color: rgba(167, 139, 250, 0.2);
+            color: #a78bfa;
+            border: 1px solid #a78bfa;
+        }
+
+        .badge-resolved {
+            background-color: rgba(16, 185, 129, 0.2);
+            color: #10b981;
+            border: 1px solid #10b981;
+        }
+
+        .badge-high {
+            background-color: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .badge-medium {
+            background-color: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid #f59e0b;
+        }
+
+        .badge-low {
+            background-color: rgba(107, 114, 128, 0.2);
+            color: #9ca3af;
+            border: 1px solid #9ca3af;
+        }
+
+        #tooltip {
+            position: fixed;
+            display: none;
+            background: linear-gradient(135deg, #1e2132 0%, #252a3a 100%);
+            color: #e2e8f0;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-size: 13px;
+            pointer-events: none;
+            z-index: 9999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6);
+            border: 1px solid #3d4168;
+            max-width: 360px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tooltip-content {
+            line-height: 1.7;
+        }
+
+        .tooltip-header {
+            font-size: 14px;
+            font-weight: 700;
+            color: #f0f4ff;
+            margin-bottom: 10px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d3148;
+        }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 0;
+        }
+
+        .tooltip-label {
+            color: #8892b0;
+            font-weight: 500;
+            font-size: 12px;
+        }
+
+        .tooltip-value {
+            color: #60a5fa;
+            font-weight: 600;
+        }
+
+        .tooltip-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .tooltip-overdue {
+            color: #ef4444;
+            font-weight: 700;
+        }
+
+        .tooltip-ontime {
+            color: #10b981;
+            font-weight: 700;
+        }
+
+        /* Termin Raporu Modal */
+        .report-modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .report-modal-overlay.active {
+            display: flex;
+        }
+
+        .report-modal {
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 950px;
+            max-height: 85vh;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .report-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid #2d3148;
+            background: linear-gradient(135deg, #1e2535 0%, #1a202c 100%);
+        }
+
+        .report-modal-header h2 {
+            font-size: 1.3rem;
+            color: #e2e8f0;
+        }
+
+        .report-modal-header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .report-modal-close {
+            background: none;
+            border: 1px solid #2d3148;
+            color: #a0aec0;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .report-modal-close:hover {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .report-download-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.2s;
+        }
+
+        .report-download-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+        }
+
+        .report-modal-body {
+            padding: 25px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .report-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .report-summary-card {
+            background: #0f1117;
+            border: 1px solid #2d3148;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .report-summary-card .value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .report-summary-card .label {
+            font-size: 0.8rem;
+            color: #8892b0;
+        }
+
+        .report-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .report-table th {
+            background: #0f1117;
+            padding: 10px 12px;
+            text-align: left;
+            color: #8892b0;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #2d3148;
+            position: sticky;
+            top: 0;
+        }
+
+        .report-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #1e2535;
+            color: #cbd5e0;
+        }
+
+        .report-table tbody tr:hover {
+            background: #252a3a;
+        }
+
+        .report-status-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .report-status-ontime {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .report-status-overdue {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .report-status-pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .report-status-noterm {
+            background: rgba(107, 114, 128, 0.15);
+            color: #9ca3af;
+            border: 1px solid rgba(107, 114, 128, 0.3);
+        }
+
+        .report-section-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #e2e8f0;
+            margin: 20px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2d3148;
+        }
+
+        /* Gantt deadline marker */
+        .gantt-deadline-marker {
+            cursor: default;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .deadline-cards-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+
+            table {
+                font-size: 0.85rem;
+            }
+
+            td, th {
+                padding: 10px;
+            }
+
+            .deadline-section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .gantt-controls {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .date-range-slider {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>ERP Sorun Takip Dashboard</h1>
+            <p>ARTI2000 - WOC ERP Sorun YÃ¶netimi</p>
+            <p id="updateInfo" style="font-size:0.85rem;color:#6b7280;margin-top:4px"></p>
+        </div>
+
+        <div class="filters-section">
+            <h3>Filtreler</h3>
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label for="filterKategori">Kategori</label>
+                    <select id="filterKategori">
+                        <option value="">TÃ¼mÃ¼</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterAltKategori">Alt Kategori</label>
+                    <select id="filterAltKategori">
+                        <option value="">TÃ¼mÃ¼</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterDurum">Durum</label>
+                    <select id="filterDurum">
+                        <option value="">TÃ¼mÃ¼</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterSorumlu">Sorumlu</label>
+                    <select id="filterSorumlu">
+                        <option value="">TÃ¼mÃ¼</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filterOncelik">Ãncelik</label>
+                    <select id="filterOncelik">
+                        <option value="">TÃ¼mÃ¼</option>
+                    </select>
+                </div>
+            </div>
+            <button class="reset-btn" onclick="resetFilters()">Filtreleri SÄ±fÄ±rla</button>
+        </div>
+
+        <div class="stats-grid" id="statsGrid"></div>
+
+        <div class="deadline-section">
+            <div class="deadline-section-header">
+                <h3>Termin (Deadline) PerformansÄ±</h3>
+                <button class="csv-export-btn" onclick="openTerminReport()">Termin Raporu</button>
+            </div>
+            <div class="deadline-cards-grid" id="deadlineCards"></div>
+        </div>
+
+        <div class="overdue-section" id="overdueSection" style="display:none;">
+            <h3>GecikmiÅ Sorunlar</h3>
+            <div id="overdueContainer"></div>
+        </div>
+
+        <div class="charts-section">
+            <div class="chart-container">
+                <h3>Durum DaÄÄ±lÄ±mÄ±</h3>
+                <div class="chart-canvas" id="durumChart"></div>
+                <div class="legend" id="durumLegend"></div>
+            </div>
+            <div class="chart-container">
+                <h3>Kategori DaÄÄ±lÄ±mÄ±</h3>
+                <div class="chart-canvas" id="kategoriChart"></div>
+                <div class="legend" id="kategoriLegend"></div>
+            </div>
+            <div class="chart-container">
+                <h3>Sorumluluk DaÄÄ±lÄ±mÄ±</h3>
+                <div class="chart-canvas" id="sorumluChart"></div>
+                <div class="legend" id="sorumluLegend"></div>
+            </div>
+            <div class="chart-container">
+                <h3>Alt Kategori DaÄÄ±lÄ±mÄ±</h3>
+                <div class="chart-canvas" id="altKategoriChart"></div>
+                <div class="legend" id="altKategoriLegend"></div>
+            </div>
+        </div>
+
+        <div class="gantt-section">
+            <h3>Zaman Ãizelgesi</h3>
+            <div class="gantt-controls">
+                <div class="date-range-slider">
+                    <label for="ganttStartDate">BaÅlangÄ±Ã§:</label>
+                    <input type="date" id="ganttStartDate">
+                    <label for="ganttEndDate">BitiÅ:</label>
+                    <input type="date" id="ganttEndDate">
+                </div>
+                <div class="gantt-range-display" id="ganttRangeDisplay"></div>
+            </div>
+            <div class="gantt-canvas" id="ganttChart"></div>
+        </div>
+
+        <div class="table-section">
+            <h3>TÃ¼m KayÄ±tlar</h3>
+            <div class="table-wrapper">
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Konu</th>
+                            <th>Kategori</th>
+                            <th>Alt Kategori</th>
+                            <th>Durum</th>
+                            <th>Ãncelik</th>
+                            <th>Sorumlu</th>
+                            <th>Ä°lk GÃ¶rÃ¼lme</th>
+                            <th>ÃÃ¶zÃ¼m Tarihi</th>
+                            <th>Termin SÃ¼resi</th>
+                            <th>Kalan GÃ¼n</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div id="tooltip"></div>
+
+    <!-- Termin Raporu Modal -->
+    <div class="report-modal-overlay" id="reportModal">
+        <div class="report-modal">
+            <div class="report-modal-header">
+                <h2>Termin Performans Raporu</h2>
+                <div class="report-modal-header-actions">
+                    <button class="report-download-btn" onclick="downloadReportCSV()">CSV Ä°ndir</button>
+                    <button class="report-modal-close" onclick="closeTerminReport()">&times;</button>
+                </div>
+            </div>
+            <div class="report-modal-body" id="reportModalBody"></div>
+        </div>
+    </div>
+
+    <div id="loadingOverlay" style="position:fixed;inset:0;background:rgba(15,17,23,0.92);z-index:10000;display:flex;align-items:center;justify-content:center;flex-direction:column">
+        <div style="width:50px;height:50px;border:4px solid #2d3148;border-top:4px solid #60a5fa;border-radius:50%;animation:spin 1s linear infinite"></div>
+        <p id="loadingText" style="color:#a0aec0;margin-top:16px;font-size:14px">Notion'dan veriler Ã§ekiliyor...</p>
+        <style>@keyframes spin{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}</style>
+    </div>
+
+    <script>
+        let ALL_DATA = [
+            {"id":"ERP-25","konu":"Ãretim planÄ±nda kullanÄ±cÄ± takip sistemi kurulmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-36","konu":"PDKS (Personel Devam Kontrol Sistemi) WOC ERP'ye baÄlanmalÄ±.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°K / PDKS","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-32","konu":"BÃ¼tÃ§eye kÄ±yasla reel maliyet raporlamasÄ± yapÄ±lmalÄ±. YÃ¶netim raporlarÄ± iÃ§in kritik.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Raporlama","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-22","konu":"SÃ¶zleÅme kalemi miktarÄ±na gÃ¶re bÃ¼tÃ§e kalem miktarÄ±ndan otomatik dÃ¼Åerek hesaplamalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-26","konu":"HakediÅ modÃ¼lÃ¼ henÃ¼z devreye alÄ±nmadÄ±. SÃ¶zleÅme ve bÃ¼tÃ§e entegrasyonu ile birlikte planlanmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"HakediÅ","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-23","konu":"Kritik malzeme sorgusunun nasÄ±l yapÄ±lacaÄÄ± tanÄ±mlanmalÄ±. Ãretim planÄ±-depo entegrasyonu.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-31","konu":"BÃ¼tÃ§e iÃ§in WOC'a form yÃ¼klenmeli. Operasyon kategorilerinde olduÄu gibi bÃ¼tÃ§e iÃ§inde excel olarak dÄ±Åa aktar butonu olmalÄ±","kategori":"Ä°Ã§ Sorumluluk","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-26","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-20","konu":"SÃ¶zleÅme bÃ¼tÃ§eyi miktar olarak aÅarsa ne olacaÄÄ± tanÄ±mlanmalÄ±. UyarÄ±/engelleme mekanizmasÄ± gerekli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-63","konu":"YÄ±llÄ±k izin hesaplamalarÄ±nda gÃ¼n hatasÄ±","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-03-23","cozumTarihi":"2026-03-23","terminSuresi":""},
+            {"id":"ERP-2","konu":"SatÄ±n alma talep ekranÄ±nda portal alanÄ± bulunmuyor. WOC Ã¼stÃ¼nde Ã§alÄ±ÅÄ±yor.","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-29","konu":"Metin Bey'in aÃ§tÄ±ÄÄ± teklifler Burcu HanÄ±m'a onaya gitmeli. Ä°kili onay sistemi kurulmalÄ±?","kategori":"Ä°Ã§ Sorumluluk","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-24","konu":"GerÃ§ekleÅen ile planlanan ilerlemenin karÅÄ±laÅtÄ±rÄ±ldÄ±ÄÄ± performans ekranÄ± oluÅturulmalÄ±.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Ä°Å PlanÄ± (MRP)","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-33","konu":"Stok sarf hareketlerinde son Ã§Ä±kan Ã¼rÃ¼n en Ã¼stte gÃ¶zÃ¼kmel WOC'a iletilmeli.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-15","konu":"SÃ¶zleÅme bÃ¼tÃ§e kalemi filtreleme eksik","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-17","konu":"BaÅlangÄ±Ã§ ve bitiÅ tarihi neden giriliyor, sistem kendi hesaplayacak mÄ± netleÅtirilmeli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-19","konu":"SÃ¶zleÅmelerde tedarik tarihi tanÄ±mÄ± ve yÃ¶netimi netleÅtirilmeli.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-9","konu":"Ä°rsaliye numarasÄ± olmayan kayÄ±tlar tespit edildi ve Ã§Ã¶zÃ¼ldÃ¼.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°rsaliye / Fatura","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"Orta","sorumlu":"ARTI2000","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-16","terminSuresi":""},
+            {"id":"ERP-28","konu":"Self-service dersi verilmesi gerekiyor. Selda HanÄ±m izin Ã§eÅitleri hakkÄ±nda eÄitim verecek.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Ä°K / PDKS","durum":"PlanlanÄ±yor","oncelik":"Orta","sorumlu":"SELDA HANIM","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-14","konu":"Saha virman talimatÄ± kurgusu (Mekan). Yusuf Bey uygun deÄil dedi ancak yeni gÃ¶rÃ¼Åmede tekrar gÃ¼ndeme geldi.","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"Depo / Stok","durum":"PlanlanÄ±yor","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-35","konu":"Depo tablet konuÅuldu, alÄ±nacak. Metin Bey sorumluluÄunda.","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"Beklemede","oncelik":"Orta","sorumlu":"METÄ°N BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-12","konu":"Birim Ã§evirme iÅlemleri hatalÄ± Ã§alÄ±ÅÄ±yor. Yusuf Bey'e sorulup eÄitim alÄ±nmasÄ± gerekiyor. HenÃ¼z WOC'a iletilmedi.","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-16","konu":"SÃ¶zleÅme otomatik yÃ¼kleme ve doldurma","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-8","konu":"Teklif/onay ekranÄ±nda pivot gÃ¶rÃ¼nÃ¼mÃ¼ bozuk","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-02-10","cozumTarihi":"2026-02-23","terminSuresi":""},
+            {"id":"ERP-18","konu":"BÃ¼tÃ§ede karÅÄ±lÄ±ÄÄ± olmayan kalem yÃ¶netimi","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"BÃ¼tÃ§e","durum":"PlanlanÄ±yor","oncelik":"YÃ¼ksek","sorumlu":"WOC / ARTI2000","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-43","konu":"SS geliÅtirmeleri: Talep edilen izin gÃ¼nÃ¼nÃ¼n izin taleplerim alanÄ±nda gÃ¶rÃ¼lmesÅ","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-11","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-7","konu":"SatÄ±n alma talep kullanÄ±cÄ±sÄ± teklif onay ekranÄ±na akmalÄ±","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"YUSUF BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-10","konu":"Depo tarafÄ±ndan gÃ¶rÃ¼lmeyen irsaliyeler vardÄ±. Ä°rsaliye sorumlusu saha mimarÄ±nÄ±n girmesine karar verildi (Ã¶rnk. Ferat Åef)","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"ALPER BEY","ilkGorulme":"2026-02-16","cozumTarihi":"2026-02-23","terminSuresi":""},
+            {"id":"ERP-11","konu":"SatÄ±n almada kur sorunsalÄ± â fatura kesildiÄi tarihteki kur yansÄ±yor","kategori":"Sistem HatasÄ±","altKategori":"SatÄ±n Alma","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-27","konu":"Depo sayÄ±mlarÄ±nÄ±n sisteme girilmesi","kategori":"Ä°Ã§ Sorumluluk","altKategori":"Depo / Stok","durum":"ÃÃ¶zÃ¼ldÃ¼","oncelik":"YÃ¼ksek","sorumlu":"CEM BEY / METÄ°N BEY","ilkGorulme":"2026-02-24","cozumTarihi":"2026-03-02","terminSuresi":""},
+            {"id":"ERP-49","konu":"SÄ±ralama dÃ¼zeni: BÃ¼tÃ§e oluÅtururken operasyon kategorileri alfabetik sÄ±rada olmalÄ± ve baÅlÄ±klar kapalÄ± gelmeli","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"Orta","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-57","konu":"BÃ¼tÃ§e modulunde yapÄ±lan deÄiÅimler kaydolmuyor","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"Beklemede","oncelik":"YÃ¼ksek","sorumlu":"","ilkGorulme":"2026-03-12","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-45","konu":"BÃTÃE: kalemler silinemiyor","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-6","konu":"Ä°hbar raporu hatalÄ± Ã§alÄ±ÅÄ±yor, dÃ¼zeltme yapÄ±lÄ±yor.","kategori":"Sistem HatasÄ±","altKategori":"Raporlama","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-18","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-4","konu":"Fatura ekranÄ± aynÄ± caride aynÄ± seri no izin vermemeli","kategori":"Sistem HatasÄ±","altKategori":"Ä°rsaliye / Fatura","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-02-16","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-3","konu":"Ä°rsaliye giriÅi yapÄ±ldÄ±ÄÄ±nda talep sahibine mail gitmesi gerekiyor.","kategori":"Sistem HatasÄ±","altKategori":"Ä°rsaliye / Fatura","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"WOC","ilkGorulme":"2026-02-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-34","konu":"10'luk Ã§ivi stok kartÄ±nÄ±n birimi deÄiÅtirilemiyor. WOC'a iletilmeli.","kategori":"Sistem HatasÄ±","altKategori":"Depo / Stok","durum":"WOC Ä°letildi","oncelik":"DÃ¼ÅÃ¼k","sorumlu":"WOC","ilkGorulme":"2026-03-05","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-47","konu":"DemirbaÅ kayÄ±tlarÄ± yÃ¼kleme hatasÄ±","kategori":"Sistem HatasÄ±","altKategori":"DemirbaÅ","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-10","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-13","konu":"Bozulan demirbaÅ aletler bakiyeden dÃ¼ÅÃ¼rÃ¼lemiyor","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"DemirbaÅ","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-02-24","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-21","konu":"Birim fiyat deÄiÅim takibi ve geÃ§miÅ baÄlantÄ±sÄ±","kategori":"Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§","altKategori":"SÃ¶zleÅme","durum":"Beklemede","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-65","konu":"Sistemde, hafta tatili farklÄ± olan Ã§alÄ±Åanlar iÃ§in yÄ±llÄ±k izin hesaplamasÄ±nda her gruba tÃ¼m yÄ±lÄ± kapsayan ayrÄ± takvimler tanÄ±mlamak gerekiyor.","kategori":"Sistem HatasÄ±","altKategori":"Ä°K / PDKS","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"UMUT BEY","ilkGorulme":"2026-03-23","cozumTarihi":"","terminSuresi":"2026-03-31"},
+            {"id":"ERP-62","konu":"Kredi kartÄ± ekstrelerini iÅlerken kredi kartÄ± hareketlerinden sadece cari Ã¶demeler seÃ§iliyor.","kategori":"Sistem HatasÄ±","altKategori":"Genel Muhasebe","durum":"WOC Ä°letildi","oncelik":"YÃ¼ksek","sorumlu":"HEDÄ°YE HANIM","ilkGorulme":"2026-03-13","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-46","konu":"KREDÄ° ÃDEMELERÄ°NDE 303 YERÄ°NE 403 HESAP ÃALIÅIYOR","kategori":"Sistem HatasÄ±","altKategori":"Genel Muhasebe","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"EREN BEY","ilkGorulme":"2026-03-03","cozumTarihi":"","terminSuresi":""},
+            {"id":"ERP-52","konu":"BÃ¼tÃ§ede var olan operasyonun altÄ±na yeni kalem eklerken kategori yol aÄacÄ±nÄ±n otomatik gelmesini istiyoruz","kategori":"Sistem HatasÄ±","altKategori":"BÃ¼tÃ§e","durum":"WOC Ä°letildi","oncelik":"Orta","sorumlu":"WOC","ilkGorulme":"2026-03-06","cozumTarihi":"","terminSuresi":""}
+        ];
+
+        let filteredData = [...ALL_DATA];
+        let ganttDateRange = { start: null, end: null };
+
+        const durumColors = {
+            'WOC Ä°letildi': '#f59e0b',
+            'Beklemede': '#3b82f6',
+            'PlanlanÄ±yor': '#a78bfa',
+            'ÃÃ¶zÃ¼ldÃ¼': '#10b981'
+        };
+
+        const kategoriColors = {
+            'Sistem HatasÄ±': '#ef4444',
+            'Devreye AlÄ±nmamÄ±Å SÃ¼reÃ§': '#f59e0b',
+            'Ä°Ã§ Sorumluluk': '#3b82f6'
+        };
+
+        // Helper function to get today's date in YYYY-MM-DD format
+        function getTodayString() {
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // Helper function to compare dates
+        function isDatePassed(dateStr) {
+            if (!dateStr) return false;
+            return dateStr < getTodayString();
+        }
+
+        // Helper function to calculate days difference
+        function calculateDaysDifference(dateStr) {
+            if (!dateStr) return 0;
+            const date = new Date(dateStr);
+            const today = new Date();
+            const diff = Math.ceil((today - date) / (1000 * 60 * 60 * 24));
+            return diff;
+        }
+
+        // Deadline Performance Calculations
+        function calculateDeadlineMetrics() {
+            const today = getTodayString();
+            let onTime = 0, delayed = 0, awaiting = 0, noDeadline = 0;
+            let totalDelay = 0, delayedCount = 0;
+
+            filteredData.forEach(d => {
+                if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
+                    if (!d.terminSuresi || d.cozumTarihi <= d.terminSuresi) {
+                        onTime++;
+                    }
+                } else {
+                    if (!d.terminSuresi) {
+                        noDeadline++;
+                    } else if (isDatePassed(d.terminSuresi)) {
+                        delayed++;
+                        const delayDays = calculateDaysDifference(d.terminSuresi);
+                        totalDelay += delayDays;
+                        delayedCount++;
+                    } else {
+                        awaiting++;
+                    }
+                }
+            });
+
+            const avgDelay = delayedCount > 0 ? (totalDelay / delayedCount).toFixed(1) : 0;
+
+            return {
+                onTime,
+                delayed,
+                awaiting,
+                noDeadline,
+                avgDelay,
+                totalItems: filteredData.length
+            };
+        }
+
+        // Update deadline cards
+        function updateDeadlineCards() {
+            const metrics = calculateDeadlineMetrics();
+            const onTimePercent = metrics.totalItems > 0 ? ((metrics.onTime / metrics.totalItems) * 100).toFixed(0) : 0;
+            const delayedPercent = metrics.totalItems > 0 ? ((metrics.delayed / metrics.totalItems) * 100).toFixed(0) : 0;
+            const awaitingPercent = metrics.totalItems > 0 ? ((metrics.awaiting / metrics.totalItems) * 100).toFixed(0) : 0;
+
+            const html = `
+                <div class="stat-card on-time">
+                    <h4>ZamanÄ±nda Tamamlanan</h4>
+                    <div class="number">${metrics.onTime}</div>
+                    <div class="percentage">${onTimePercent}%</div>
+                </div>
+                <div class="stat-card delayed">
+                    <h4>Geciken</h4>
+                    <div class="number">${metrics.delayed}</div>
+                    <div class="percentage">${delayedPercent}%</div>
+                </div>
+                <div class="stat-card awaiting">
+                    <h4>Termin Bekleniyor</h4>
+                    <div class="number">${metrics.awaiting}</div>
+                    <div class="percentage">${awaitingPercent}%</div>
+                </div>
+                <div class="stat-card no-deadline">
+                    <h4>Termin TanÄ±msÄ±z</h4>
+                    <div class="number">${metrics.noDeadline}</div>
+                </div>
+                <div class="stat-card avg-delay">
+                    <h4>Ortalama Gecikme</h4>
+                    <div class="number">${metrics.avgDelay}</div>
+                    <div class="percentage">gÃ¼n</div>
+                </div>
+            `;
+
+            document.getElementById('deadlineCards').innerHTML = html;
+        }
+
+        // Get overdue issues
+        function getOverdueIssues() {
+            const today = getTodayString();
+            return filteredData.filter(d =>
+                d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼'
+            ).sort((a, b) => {
+                const delayA = calculateDaysDifference(a.terminSuresi);
+                const delayB = calculateDaysDifference(b.terminSuresi);
+                return delayB - delayA;
+            });
+        }
+
+        // Update overdue section
+        function updateOverdueSection() {
+            const overdueIssues = getOverdueIssues();
+            const section = document.getElementById('overdueSection');
+            const container = document.getElementById('overdueContainer');
+
+            if (overdueIssues.length === 0) {
+                section.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+
+            section.style.display = 'block';
+
+            let html = `
+                <table class="overdue-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Konu</th>
+                            <th>Sorumlu</th>
+                            <th>Termin Tarihi</th>
+                            <th>Gecikme (GÃ¼n)</th>
+                            <th>Ãncelik</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            overdueIssues.forEach(issue => {
+                const delayDays = calculateDaysDifference(issue.terminSuresi);
+                let oncelikBadge = 'badge-low';
+                if (issue.oncelik === 'YÃ¼ksek') oncelikBadge = 'badge-high';
+                else if (issue.oncelik === 'Orta') oncelikBadge = 'badge-medium';
+
+                html += `
+                    <tr>
+                        <td><strong>${issue.id}</strong></td>
+                        <td>${issue.konu}</td>
+                        <td>${issue.sorumlu}</td>
+                        <td>${issue.terminSuresi}</td>
+                        <td><span class="delay-days">-${delayDays} gÃ¼n</span></td>
+                        <td><span class="badge ${oncelikBadge}">${issue.oncelik}</span></td>
+                    </tr>
+                `;
+            });
+
+            html += `
+                    </tbody>
+                </table>
+            `;
+
+            container.innerHTML = html;
+        }
+
+        // Calculate remaining days for a task
+        function getRemainingDaysCell(record) {
+            if (!record.terminSuresi) return '-';
+
+            const today = getTodayString();
+            if (record.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
+                return 'â TamamlandÄ±';
+            } else if (isDatePassed(record.terminSuresi)) {
+                const delayDays = calculateDaysDifference(record.terminSuresi);
+                return `-${delayDays} gÃ¼n`;
+            } else {
+                const daysLeft = Math.ceil((new Date(record.terminSuresi) - new Date(today)) / (1000 * 60 * 60 * 24));
+                return `${daysLeft} gÃ¼n`;
+            }
+        }
+
+        // Initialize filter options
+        function initializeFilters() {
+            const kategoriler = [...new Set(ALL_DATA.map(d => d.kategori))].sort();
+            const altKategoriler = [...new Set(ALL_DATA.map(d => d.altKategori))].sort();
+            const durumler = [...new Set(ALL_DATA.map(d => d.durum))].sort();
+            const sorumlular = [...new Set(ALL_DATA.map(d => d.sorumlu).filter(s => s))].sort();
+            const oncelikler = ['YÃ¼ksek', 'Orta', 'DÃ¼ÅÃ¼k'];
+
+            kategoriler.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                document.getElementById('filterKategori').appendChild(option);
+            });
+
+            altKategoriler.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                document.getElementById('filterAltKategori').appendChild(option);
+            });
+
+            durumler.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                document.getElementById('filterDurum').appendChild(option);
+            });
+
+            sorumlular.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                document.getElementById('filterSorumlu').appendChild(option);
+            });
+
+            oncelikler.forEach(k => {
+                const option = document.createElement('option');
+                option.value = k;
+                option.textContent = k;
+                document.getElementById('filterOncelik').appendChild(option);
+            });
+
+            // Add event listeners
+            document.getElementById('filterKategori').addEventListener('change', applyFilters);
+            document.getElementById('filterAltKategori').addEventListener('change', applyFilters);
+            document.getElementById('filterDurum').addEventListener('change', applyFilters);
+            document.getElementById('filterSorumlu').addEventListener('change', applyFilters);
+            document.getElementById('filterOncelik').addEventListener('change', applyFilters);
+
+            // Initialize Gantt date controls
+            initializeGanttControls();
+        }
+
+        // Initialize Gantt date controls
+        function initializeGanttControls() {
+            const dataWithDates = ALL_DATA.filter(d => d.ilkGorulme);
+            if (dataWithDates.length === 0) return;
+
+            const dates = [];
+            dataWithDates.forEach(d => {
+                if (d.ilkGorulme) dates.push(d.ilkGorulme);
+                if (d.cozumTarihi) dates.push(d.cozumTarihi);
+            });
+
+            dates.sort();
+            const minDate = dates[0];
+            const maxDate = dates[dates.length - 1];
+
+            const startInput = document.getElementById('ganttStartDate');
+            const endInput = document.getElementById('ganttEndDate');
+
+            startInput.value = minDate;
+            endInput.value = maxDate;
+            ganttDateRange.start = minDate;
+            ganttDateRange.end = maxDate;
+            updateGanttRangeDisplay();
+
+            startInput.addEventListener('change', function() {
+                ganttDateRange.start = this.value;
+                updateGanttRangeDisplay();
+                updateGantt();
+            });
+
+            endInput.addEventListener('change', function() {
+                ganttDateRange.end = this.value;
+                updateGanttRangeDisplay();
+                updateGantt();
+            });
+        }
+
+        // Update Gantt range display
+        function updateGanttRangeDisplay() {
+            const display = document.getElementById('ganttRangeDisplay');
+            if (ganttDateRange.start && ganttDateRange.end) {
+                display.textContent = `${ganttDateRange.start} - ${ganttDateRange.end}`;
+            }
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const kategori = document.getElementById('filterKategori').value;
+            const altKategori = document.getElementById('filterAltKategori').value;
+            const durum = document.getElementById('filterDurum').value;
+            const sorumlu = document.getElementById('filterSorumlu').value;
+            const oncelik = document.getElementById('filterOncelik').value;
+
+            filteredData = ALL_DATA.filter(d => {
+                return (!kategori || d.kategori === kategori) &&
+                       (!altKategori || d.altKategori === altKategori) &&
+                       (!durum || d.durum === durum) &&
+                       (!sorumlu || d.sorumlu === sorumlu) &&
+                       (!oncelik || d.oncelik === oncelik);
+            });
+
+            updateDashboard();
+        }
+
+        // Reset filters
+        function resetFilters() {
+            document.getElementById('filterKategori').value = '';
+            document.getElementById('filterAltKategori').value = '';
+            document.getElementById('filterDurum').value = '';
+            document.getElementById('filterSorumlu').value = '';
+            document.getElementById('filterOncelik').value = '';
+            filteredData = [...ALL_DATA];
+            updateDashboard();
+        }
+
+        // Update dashboard
+        function updateDashboard() {
+            updateStats();
+            updateDeadlineCards();
+            updateOverdueSection();
+            updateCharts();
+            updateTable();
+            updateGantt();
+        }
+
+        // Update stat cards
+        function updateStats() {
+            const stats = {
+                toplam: filteredData.length,
+                woc: filteredData.filter(d => d.durum === 'WOC Ä°letildi').length,
+                beklemede: filteredData.filter(d => d.durum === 'Beklemede').length,
+                planlanÄ±yor: filteredData.filter(d => d.durum === 'PlanlanÄ±yor').length,
+                cozuldu: filteredData.filter(d => d.durum === 'ÃÃ¶zÃ¼ldÃ¼').length,
+                yuksekOncelik: filteredData.filter(d => d.oncelik === 'YÃ¼ksek').length
+            };
+
+            const statsHtml = `
+                <div class="stat-card total">
+                    <h4>Toplam Sorun</h4>
+                    <div class="number">${stats.toplam}</div>
+                </div>
+                <div class="stat-card woc">
+                    <h4>WOC Ä°letildi</h4>
+                    <div class="number">${stats.woc}</div>
+                </div>
+                <div class="stat-card pending">
+                    <h4>Beklemede</h4>
+                    <div class="number">${stats.beklemede}</div>
+                </div>
+                <div class="stat-card planning">
+                    <h4>PlanlanÄ±yor</h4>
+                    <div class="number">${stats.planlanÄ±yor}</div>
+                </div>
+                <div class="stat-card resolved">
+                    <h4>ÃÃ¶zÃ¼ldÃ¼</h4>
+                    <div class="number">${stats.cozuldu}</div>
+                </div>
+                <div class="stat-card high-priority">
+                    <h4>YÃ¼ksek Ãncelik</h4>
+                    <div class="number">${stats.yuksekOncelik}</div>
+                </div>
+            `;
+
+            document.getElementById('statsGrid').innerHTML = statsHtml;
+        }
+
+        // Create donut chart
+        function createDonutChart(containerId, data, colors, legendId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+
+            const width = 380;
+            const height = 420;
+            const radius = Math.min(width, height) / 2 - 20;
+
+            const svg = d3.select(`#${containerId}`)
+                .append('svg')
+                .attr('width', width)
+                .attr('height', height)
+                .append('g')
+                .attr('transform', `translate(${width/2},${height/2})`);
+
+            const pie = d3.pie().value(d => d.value);
+            const arc = d3.arc()
+                .innerRadius(radius * 0.5)
+                .outerRadius(radius);
+
+            const arcHover = d3.arc()
+                .innerRadius(radius * 0.5)
+                .outerRadius(radius * 1.08);
+
+            const slices = svg.selectAll('path')
+                .data(pie(data))
+                .enter()
+                .append('path')
+                .attr('d', arc)
+                .attr('fill', d => colors[d.data.label] || '#8b5cf6')
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr('d', arcHover);
+
+                    const total = data.reduce((sum, item) => sum + item.value, 0);
+                    const percentage = ((d.data.value / total) * 100).toFixed(1);
+                    const color = colors[d.data.label] || '#8b5cf6';
+
+                    showTooltip(event, `<div class="tooltip-content">
+                        <div class="tooltip-header" style="border-color:${color}">${d.data.label}</div>
+                        <div class="tooltip-row"><span class="tooltip-label">Sorun SayÄ±sÄ±</span><span class="tooltip-value" style="font-size:15px">${d.data.value}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Oran</span><span class="tooltip-value">${percentage}%</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Toplam</span><span style="color:#8892b0">${total} sorun</span></div>
+                    </div>`);
+                })
+                .on('mousemove', function(event) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.left = (event.pageX + 10) + 'px';
+                    tooltip.style.top = (event.pageY + 10) + 'px';
+                })
+                .on('mouseout', function() {
+                    d3.select(this)
+                        .transition()
+                        .duration(200)
+                        .attr('d', arc);
+                    hideTooltip();
+                });
+
+            // Add labels on segments
+            svg.selectAll('text')
+                .data(pie(data))
+                .enter()
+                .append('text')
+                .attr('transform', d => `translate(${arc.centroid(d)})`)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#fff')
+                .attr('font-size', '12px')
+                .attr('font-weight', '600')
+                .text(d => `${((d.data.value / data.reduce((sum, item) => sum + item.value, 0)) * 100).toFixed(0)}%`);
+
+            // Create legend
+            const legend = document.getElementById(legendId);
+            legend.innerHTML = '';
+            data.forEach(item => {
+                const legendItem = document.createElement('div');
+                legendItem.className = 'legend-item';
+                legendItem.innerHTML = `
+                    <div class="legend-color" style="background-color: ${colors[item.label] || '#8b5cf6'}"></div>
+                    <span>${item.label} (${item.value})</span>
+                `;
+                legend.appendChild(legendItem);
+            });
+        }
+
+        // Update charts
+        function updateCharts() {
+            // Durum chart
+            const durumData = d3.rollup(filteredData, v => v.length, d => d.durum);
+            const durumChartData = Array.from(durumData, ([label, value]) => ({label, value}));
+            createDonutChart('durumChart', durumChartData, durumColors, 'durumLegend');
+
+            // Kategori chart
+            const kategoriData = d3.rollup(filteredData, v => v.length, d => d.kategori);
+            const kategoriChartData = Array.from(kategoriData, ([label, value]) => ({label, value}));
+            createDonutChart('kategoriChart', kategoriChartData, kategoriColors, 'kategoriLegend');
+
+            // Sorumlu chart
+            const sorumluData = d3.rollup(filteredData.filter(d => d.sorumlu), v => v.length, d => d.sorumlu);
+            const sorumluChartData = Array.from(sorumluData, ([label, value]) => ({label, value}))
+                .sort((a, b) => b.value - a.value)
+                .slice(0, 8);
+            const sorumluColors = {};
+            const colorPalette = ['#60a5fa', '#a78bfa', '#ec4899', '#f59e0b', '#10b981', '#06b6d4', '#8b5cf6', '#f87171'];
+            sorumluChartData.forEach((item, i) => {
+                sorumluColors[item.label] = colorPalette[i % colorPalette.length];
+            });
+            createDonutChart('sorumluChart', sorumluChartData, sorumluColors, 'sorumluLegend');
+
+            // Alt Kategori chart
+            const altKategoriData = d3.rollup(filteredData, v => v.length, d => d.altKategori);
+            const altKategoriChartData = Array.from(altKategoriData, ([label, value]) => ({label, value}))
+                .sort((a, b) => b.value - a.value)
+                .slice(0, 8);
+            const altKategoriColors = {};
+            altKategoriChartData.forEach((item, i) => {
+                altKategoriColors[item.label] = colorPalette[i % colorPalette.length];
+            });
+            createDonutChart('altKategoriChart', altKategoriChartData, altKategoriColors, 'altKategoriLegend');
+        }
+
+        // Update table
+        function updateTable() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = '';
+
+            filteredData.forEach(record => {
+                const row = document.createElement('tr');
+
+                let durumBadge = 'badge-pending';
+                if (record.durum === 'WOC Ä°letildi') durumBadge = 'badge-woc';
+                else if (record.durum === 'PlanlanÄ±yor') durumBadge = 'badge-planning';
+                else if (record.durum === 'ÃÃ¶zÃ¼ldÃ¼') durumBadge = 'badge-resolved';
+
+                let oncelikBadge = 'badge-low';
+                if (record.oncelik === 'YÃ¼ksek') oncelikBadge = 'badge-high';
+                else if (record.oncelik === 'Orta') oncelikBadge = 'badge-medium';
+
+                const remainingDaysCell = getRemainingDaysCell(record);
+                let remainingDaysClass = 'remaining-days-cell';
+                if (remainingDaysCell.includes('TamamlandÄ±')) {
+                    remainingDaysClass += ' remaining-days-completed';
+                } else if (remainingDaysCell.includes('-') && remainingDaysCell.includes('gÃ¼n')) {
+                    remainingDaysClass += ' remaining-days-negative';
+                }
+
+                row.innerHTML = `
+                    <td><strong>${record.id}</strong></td>
+                    <td>${record.konu}</td>
+                    <td>${record.kategori}</td>
+                    <td>${record.altKategori}</td>
+                    <td><span class="badge ${durumBadge}">${record.durum}</span></td>
+                    <td><span class="badge ${oncelikBadge}">${record.oncelik}</span></td>
+                    <td>${record.sorumlu}</td>
+                    <td>${record.ilkGorulme || '-'}</td>
+                    <td>${record.cozumTarihi || '-'}</td>
+                    <td>${record.terminSuresi || '-'}</td>
+                    <td class="${remainingDaysClass}">${remainingDaysCell}</td>
+                `;
+
+                row.addEventListener('mouseover', function(e) {
+                    showTooltip(e, `${record.konu}<br/><small>${record.id} - ${record.kategori}</small>`);
+                });
+                row.addEventListener('mousemove', function(e) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.left = (e.pageX + 10) + 'px';
+                    tooltip.style.top = (e.pageY + 10) + 'px';
+                });
+                row.addEventListener('mouseout', hideTooltip);
+
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update Gantt chart
+        function updateGantt() {
+            const container = document.getElementById('ganttChart');
+            container.innerHTML = '';
+
+            const today = getTodayString();
+            const parseDate = d3.timeParse('%Y-%m-%d');
+
+            let dataWithDates = filteredData.filter(d => d.ilkGorulme);
+
+            // Filter by date range if set
+            if (ganttDateRange.start && ganttDateRange.end) {
+                dataWithDates = dataWithDates.filter(d => {
+                    const startDate = d.ilkGorulme;
+                    const endDate = d.cozumTarihi || today;
+                    return !(endDate < ganttDateRange.start || startDate > ganttDateRange.end);
+                });
+            }
+
+            if (dataWithDates.length === 0) {
+                container.innerHTML = '<p style="color: #a0aec0; text-align: center; padding: 40px;">Tarih verisi bulunamadÄ±</p>';
+                return;
+            }
+
+            const margin = {top: 20, right: 30, bottom: 30, left: 250};
+            const width = 1000 - margin.left - margin.right;
+            const height = Math.max(300, dataWithDates.length * 30);
+
+            const svg = d3.select(`#${container.id}`)
+                .append('svg')
+                .attr('width', width + margin.left + margin.right)
+                .attr('height', height + margin.top + margin.bottom)
+                .append('g')
+                .attr('transform', `translate(${margin.left},${margin.top})`);
+
+            // Parse dates
+            dataWithDates.forEach(d => {
+                d.start = parseDate(d.ilkGorulme);
+                d.end = d.cozumTarihi ? parseDate(d.cozumTarihi) : new Date();
+                d.deadline = d.terminSuresi ? parseDate(d.terminSuresi) : null;
+            });
+
+            const minDate = d3.min(dataWithDates, d => d.start);
+            const maxDate = d3.max(dataWithDates, d => d.end);
+
+            const xScale = d3.scaleTime()
+                .domain([minDate, maxDate])
+                .range([0, width]);
+
+            const yScale = d3.scaleBand()
+                .domain(dataWithDates.map((d, i) => i))
+                .range([0, height])
+                .padding(0.5);
+
+            // Draw deadline zones (shaded area from deadline to bar end for overdue items)
+            svg.selectAll('rect.deadline-zone')
+                .data(dataWithDates.filter(d => d.deadline && d.end > d.deadline && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼'))
+                .enter()
+                .append('rect')
+                .attr('class', 'deadline-zone')
+                .attr('y', (d) => yScale(dataWithDates.indexOf(d)) - 2)
+                .attr('x', d => xScale(d.deadline))
+                .attr('width', d => Math.max(0, xScale(d.end) - xScale(d.deadline)))
+                .attr('height', yScale.bandwidth() + 4)
+                .attr('fill', '#ef4444')
+                .attr('opacity', 0.1)
+                .attr('rx', 3);
+
+            // Add bars
+            svg.selectAll('rect.gantt-bar')
+                .data(dataWithDates)
+                .enter()
+                .append('rect')
+                .attr('class', 'gantt-bar')
+                .attr('y', (d, i) => yScale(i))
+                .attr('x', d => xScale(d.start))
+                .attr('width', d => Math.max(1, xScale(d.end) - xScale(d.start)))
+                .attr('height', yScale.bandwidth())
+                .attr('rx', 3)
+                .attr('fill', d => {
+                    if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') return '#10b981';
+                    if (d.terminSuresi && isDatePassed(d.terminSuresi) && d.durum !== 'ÃÃ¶zÃ¼ldÃ¼') return '#ef4444';
+                    return durumColors[d.durum] || '#8b5cf6';
+                })
+                .style('opacity', d => d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? 0.6 : 0.8)
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    d3.select(this).style('opacity', 1).attr('stroke', '#fff').attr('stroke-width', 1.5);
+                    const days = Math.ceil((d.end - d.start) / (1000 * 60 * 60 * 24));
+                    const s = getTerminStatus(d);
+                    const durumColor = d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? '#10b981' : (d.terminSuresi && isDatePassed(d.terminSuresi) ? '#ef4444' : '#60a5fa');
+                    let t = `<div class="tooltip-content">
+                        <div class="tooltip-header">${d.id} â ${d.konu}</div>
+                        <div class="tooltip-row"><span class="tooltip-label">Durum</span><span class="tooltip-badge" style="background:${durumColor}22;color:${durumColor};border:1px solid ${durumColor}44">${d.durum}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Ãncelik</span><span class="tooltip-value">${d.oncelik}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Kategori</span><span class="tooltip-value">${d.kategori}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Sorumlu</span><span class="tooltip-value">${d.sorumlu}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">BaÅlangÄ±Ã§</span><span class="tooltip-value">${d.ilkGorulme}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">BitiÅ</span><span class="tooltip-value">${d.cozumTarihi || 'Devam ediyor'}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">SÃ¼re</span><span class="tooltip-value">${days} gÃ¼n</span></div>`;
+                    if (d.terminSuresi) {
+                        t += `<div class="tooltip-row"><span class="tooltip-label">Termin</span><span class="tooltip-value">${d.terminSuresi}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Termin Durumu</span><span class="${s.cls === 'overdue' ? 'tooltip-overdue' : s.cls === 'ontime' ? 'tooltip-ontime' : 'tooltip-value'}">${s.text}</span></div>`;
+                    } else {
+                        t += `<div class="tooltip-row"><span class="tooltip-label">Termin</span><span style="color:#9ca3af">TanÄ±msÄ±z</span></div>`;
+                    }
+                    t += '</div>';
+                    showTooltip(event, t);
+                })
+                .on('mousemove', function(event) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.left = (event.pageX + 15) + 'px';
+                    tooltip.style.top = (event.pageY + 15) + 'px';
+                })
+                .on('mouseout', function() {
+                    const d = d3.select(this).datum();
+                    d3.select(this).style('opacity', d.durum === 'ÃÃ¶zÃ¼ldÃ¼' ? 0.6 : 0.8).attr('stroke', 'none');
+                    hideTooltip();
+                });
+
+            // Draw today line
+            const todayDate = new Date();
+            const todayX = xScale(todayDate);
+            if (todayX >= 0 && todayX <= width) {
+                svg.append('line')
+                    .attr('x1', todayX)
+                    .attr('y1', 0)
+                    .attr('x2', todayX)
+                    .attr('y2', height)
+                    .attr('stroke', '#a0aec0')
+                    .attr('stroke-dasharray', '4,4')
+                    .attr('opacity', 0.5);
+
+                svg.append('text')
+                    .attr('x', todayX)
+                    .attr('y', -5)
+                    .attr('fill', '#a0aec0')
+                    .attr('font-size', '11px')
+                    .text('BugÃ¼n');
+            }
+
+            // Draw deadline markers (diamond + dashed line)
+            const deadlineData = dataWithDates.filter(d => d.deadline);
+            const deadlineG = svg.selectAll('g.deadline-marker')
+                .data(deadlineData)
+                .enter()
+                .append('g')
+                .attr('class', 'deadline-marker');
+
+            // Dashed vertical line for deadline
+            deadlineG.append('line')
+                .attr('x1', d => xScale(d.deadline))
+                .attr('y1', d => yScale(dataWithDates.indexOf(d)))
+                .attr('x2', d => xScale(d.deadline))
+                .attr('y2', d => yScale(dataWithDates.indexOf(d)) + yScale.bandwidth())
+                .attr('stroke', '#ef4444')
+                .attr('stroke-width', 2)
+                .attr('stroke-dasharray', '4,2')
+                .attr('opacity', 0.8);
+
+            // Diamond marker at top of deadline line
+            const diamondSize = 5;
+            deadlineG.append('path')
+                .attr('d', d => {
+                    const cx = xScale(d.deadline);
+                    const cy = yScale(dataWithDates.indexOf(d)) + yScale.bandwidth() / 2;
+                    return `M${cx},${cy-diamondSize} L${cx+diamondSize},${cy} L${cx},${cy+diamondSize} L${cx-diamondSize},${cy} Z`;
+                })
+                .attr('fill', '#ef4444')
+                .attr('stroke', '#ff6b6b')
+                .attr('stroke-width', 1)
+                .attr('opacity', 0.9);
+
+            // Small "T" label above the diamond
+            deadlineG.append('text')
+                .attr('x', d => xScale(d.deadline))
+                .attr('y', d => yScale(dataWithDates.indexOf(d)) - 3)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ef4444')
+                .attr('font-size', '9px')
+                .attr('font-weight', '700')
+                .text('T');
+
+            // Deadline tooltip on hover
+            deadlineG.append('rect')
+                .attr('x', d => xScale(d.deadline) - 10)
+                .attr('y', d => yScale(dataWithDates.indexOf(d)))
+                .attr('width', 20)
+                .attr('height', yScale.bandwidth())
+                .attr('fill', 'transparent')
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    const s = getTerminStatus(d);
+                    showTooltip(event, `<div class="tooltip-content">
+                        <div class="tooltip-header">Termin: ${d.terminSuresi}</div>
+                        <div class="tooltip-row"><span class="tooltip-label">Sorun</span><span class="tooltip-value">${d.id} â ${d.konu}</span></div>
+                        <div class="tooltip-row"><span class="tooltip-label">Durum</span><span class="${s.cls === 'overdue' ? 'tooltip-overdue' : s.cls === 'ontime' ? 'tooltip-ontime' : 'tooltip-value'}">${s.text}</span></div>
+                    </div>`);
+                })
+                .on('mousemove', function(event) {
+                    const tooltip = document.getElementById('tooltip');
+                    tooltip.style.left = (event.pageX + 15) + 'px';
+                    tooltip.style.top = (event.pageY + 15) + 'px';
+                })
+                .on('mouseout', hideTooltip);
+
+            // Add axis labels (ID + truncated konu)
+            svg.selectAll('.task-label')
+                .data(dataWithDates)
+                .enter()
+                .append('text')
+                .attr('class', 'task-label')
+                .attr('x', -10)
+                .attr('y', (d, i) => yScale(i) + yScale.bandwidth() / 2)
+                .attr('dy', '0.35em')
+                .attr('text-anchor', 'end')
+                .attr('fill', '#cbd5e0')
+                .attr('font-size', '11px')
+                .text(d => {
+                    const short = d.konu.length > 18 ? d.konu.substring(0, 18) + 'â¦' : d.konu;
+                    return d.id + ' â ' + short;
+                });
+
+            // Add axes
+            const xAxis = d3.axisBottom(xScale);
+            svg.append('g')
+                .attr('transform', `translate(0,${height})`)
+                .call(xAxis)
+                .style('color', '#cbd5e0');
+
+            svg.append('g')
+                .call(d3.axisLeft(yScale).tickFormat(() => ''))
+                .style('color', '#cbd5e0');
+        }
+
+        // Termin Report Modal
+        function getTerminStatus(d) {
+            const today = getTodayString();
+            if (!d.terminSuresi) return { text: 'Termin TanÄ±msÄ±z', cls: 'noterm', days: null };
+            if (d.durum === 'ÃÃ¶zÃ¼ldÃ¼') {
+                if (d.cozumTarihi && d.cozumTarihi <= d.terminSuresi) return { text: 'ZamanÄ±nda', cls: 'ontime', days: 0 };
+                if (d.cozumTarihi && d.cozumTarihi > d.terminSuresi) {
+                    const delay = Math.ceil((new Date(d.cozumTarihi) - new Date(d.terminSuresi)) / (1000*60*60*24));
+                    return { text: delay + ' gÃ¼n geÃ§', cls: 'overdue', days: -delay };
+                }
+                return { text: 'ZamanÄ±nda', cls: 'ontime', days: 0 };
+            }
+            if (isDatePassed(d.terminSuresi)) {
+                const delay = calculateDaysDifference(d.terminSuresi);
+                return { text: delay + ' gÃ¼n gecikmiÅ', cls: 'overdue', days: -delay };
+            }
+            const left = Math.ceil((new Date(d.terminSuresi) - new Date(today)) / (1000*60*60*24));
+            return { text: left + ' gÃ¼n kaldÄ±', cls: 'pending', days: left };
+        }
+
+        function openTerminReport() {
+            const modal = document.getElementById('reportModal');
+            const body = document.getElementById('reportModalBody');
+            const today = getTodayString();
+
+            // Compute stats
+            let ontime = 0, overdue = 0, pending = 0, noterm = 0, totalDelay = 0, delayCount = 0;
+            const items = filteredData.map(d => {
+                const s = getTerminStatus(d);
+                if (s.cls === 'ontime') ontime++;
+                else if (s.cls === 'overdue') { overdue++; totalDelay += Math.abs(s.days); delayCount++; }
+                else if (s.cls === 'pending') pending++;
+                else noterm++;
+                return { ...d, terminStatus: s };
+            });
+
+            const withTermin = ontime + overdue + pending;
+            const avgDelay = delayCount > 0 ? Math.round(totalDelay / delayCount) : 0;
+
+            let html = '<div class="report-summary-grid">';
+            html += `<div class="report-summary-card"><div class="value" style="color:#e2e8f0">${filteredData.length}</div><div class="label">Toplam Sorun</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#10b981">${ontime}</div><div class="label">ZamanÄ±nda (${withTermin > 0 ? Math.round(ontime/withTermin*100) : 0}%)</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${overdue}</div><div class="label">GecikmiÅ (${withTermin > 0 ? Math.round(overdue/withTermin*100) : 0}%)</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#f59e0b">${pending}</div><div class="label">Bekliyor</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#9ca3af">${noterm}</div><div class="label">Termin TanÄ±msÄ±z</div></div>`;
+            html += `<div class="report-summary-card"><div class="value" style="color:#ef4444">${avgDelay} gÃ¼n</div><div class="label">Ort. Gecikme</div></div>`;
+            html += '</div>';
+
+            // Overdue items table
+            const overdueItems = items.filter(i => i.terminStatus.cls === 'overdue').sort((a,b) => a.terminStatus.days - b.terminStatus.days);
+            if (overdueItems.length > 0) {
+                html += '<div class="report-section-title" style="color:#ef4444;">GecikmiÅ Sorunlar (' + overdueItems.length + ')</div>';
+                html += buildReportTable(overdueItems);
+            }
+
+            // Pending items table
+            const pendingItems = items.filter(i => i.terminStatus.cls === 'pending').sort((a,b) => a.terminStatus.days - b.terminStatus.days);
+            if (pendingItems.length > 0) {
+                html += '<div class="report-section-title" style="color:#f59e0b;">Termini YaklaÅanlar (' + pendingItems.length + ')</div>';
+                html += buildReportTable(pendingItems);
+            }
+
+            // On-time items
+            const ontimeItems = items.filter(i => i.terminStatus.cls === 'ontime');
+            if (ontimeItems.length > 0) {
+                html += '<div class="report-section-title" style="color:#10b981;">ZamanÄ±nda Tamamlanan (' + ontimeItems.length + ')</div>';
+                html += buildReportTable(ontimeItems);
+            }
+
+            body.innerHTML = html;
+            modal.classList.add('active');
+        }
+
+        function buildReportTable(items) {
+            let t = '<table class="report-table"><thead><tr><th>ID</th><th>Konu</th><th>Sorumlu</th><th>Ãncelik</th><th>Termin</th><th>Durum</th></tr></thead><tbody>';
+            items.forEach(d => {
+                const s = d.terminStatus;
+                t += `<tr>
+                    <td><strong>${d.id}</strong></td>
+                    <td>${d.konu}</td>
+                    <td>${d.sorumlu}</td>
+                    <td>${d.oncelik}</td>
+                    <td>${d.terminSuresi || '-'}</td>
+                    <td><span class="report-status-badge report-status-${s.cls}">${s.text}</span></td>
+                </tr>`;
+            });
+            t += '</tbody></table>';
+            return t;
+        }
+
+        function closeTerminReport() {
+            document.getElementById('reportModal').classList.remove('active');
+        }
+
+        function downloadReportCSV() {
+            const today = getTodayString();
+            let csv = 'ID,Konu,Kategori,Durum,Ãncelik,Sorumlu,Ä°lk GÃ¶rÃ¼lme,ÃÃ¶zÃ¼m Tarihi,Termin SÃ¼resi,Durum Detay\n';
+            filteredData.forEach(d => {
+                const s = getTerminStatus(d);
+                csv += [d.id, `"${d.konu.replace(/"/g,'""')}"`, d.kategori, d.durum, d.oncelik, d.sorumlu, d.ilkGorulme||'', d.cozumTarihi||'', d.terminSuresi||'', s.text].join(',') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = 'termin-raporu.csv';
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Close modal on overlay click
+        document.getElementById('reportModal').addEventListener('click', function(e) {
+            if (e.target === this) closeTerminReport();
+        });
+
+        // Tooltip functions
+        function showTooltip(event, content) {
+            const tooltip = document.getElementById('tooltip');
+            tooltip.innerHTML = content;
+            tooltip.style.display = 'block';
+            tooltip.style.left = (event.pageX + 10) + 'px';
+            tooltip.style.top = (event.pageY + 10) + 'px';
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').style.display = 'none';
+        }
+
+        // Load data from Notion API (via Netlify Function)
+        async function loadFromNotion() {
+            var overlay = document.getElementById('loadingOverlay');
+            var loadText = document.getElementById('loadingText');
+            try {
+                overlay.style.display = 'flex';
+                loadText.textContent = 'Notion\'dan veriler Ã§ekiliyor...';
+                var resp = await fetch('/.netlify/functions/notion-data');
+                if (resp.ok) {
+                    var data = await resp.json();
+                    if (Array.isArray(data) && data.length > 0) {
+                        ALL_DATA = data;
+                        loadText.textContent = data.length + ' kayÄ±t yÃ¼klendi!';
+                        document.getElementById('updateInfo').innerHTML = 'CanlÄ± Notion verisi Â· Son gÃ¼ncelleme: ' + new Date().toLocaleString('tr-TR');
+                    } else if (data.error) {
+                        loadText.textContent = 'Notion baÄlantÄ±sÄ± kurulamadÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
+                        document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+                    }
+                } else {
+                    loadText.textContent = 'BaÄlantÄ± hatasÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
+                    document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+                }
+            } catch(e) {
+                loadText.textContent = 'BaÄlantÄ± hatasÄ±, Ã¶nbellek verisi kullanÄ±lÄ±yor...';
+                document.getElementById('updateInfo').innerHTML = 'Ãnbellek verisi Â· ' + new Date().toLocaleString('tr-TR');
+            }
+            filteredData = [...ALL_DATA];
+            initializeFilters();
+            updateDashboard();
+            setTimeout(function(){ overlay.style.display = 'none'; }, 400);
+        }
+
+        // Initialize
+        window.addEventListener('load', loadFromNotion);
+    </script>
+</body>
+</html>
