@@ -607,7 +607,6 @@
 
         tbody tr:hover {
             background-color: #2d3148;
-            cursor: pointer;
         }
 
         tbody tr:nth-child(odd) {
@@ -1781,8 +1780,8 @@
                 })
                 .on('mousemove', function(event) {
                     const tooltip = document.getElementById('tooltip');
-                    tooltip.style.left = (event.pageX + 10) + 'px';
-                    tooltip.style.top = (event.pageY + 10) + 'px';
+                    tooltip.style.left = (event.clientX + 10) + 'px';
+                    tooltip.style.top = (event.clientY + 10) + 'px';
                 })
                 .on('mouseout', function() {
                     d3.select(this)
@@ -1937,8 +1936,8 @@
                 });
                 row.addEventListener('mousemove', function(e) {
                     const tooltip = document.getElementById('tooltip');
-                    tooltip.style.left = (e.pageX + 10) + 'px';
-                    tooltip.style.top = (e.pageY + 10) + 'px';
+                    tooltip.style.left = (e.clientX + 10) + 'px';
+                    tooltip.style.top = (e.clientY + 10) + 'px';
                 });
                 row.addEventListener('mouseout', hideTooltip);
 
@@ -1970,7 +1969,7 @@
                 return;
             }
 
-            const margin = {top: 20, right: 30, bottom: 30, left: 250};
+            const margin = {top: 35, right: 30, bottom: 30, left: 250};
             const width = 1000 - margin.left - margin.right;
             const height = Math.max(300, dataWithDates.length * 30);
 
@@ -1989,7 +1988,12 @@
             });
 
             const minDate = d3.min(dataWithDates, d => d.start);
-            const maxDate = d3.max(dataWithDates, d => d.end);
+            let maxDate = d3.max(dataWithDates, d => d.end);
+            // Ensure deadlines are visible in the chart range
+            const maxDeadline = d3.max(dataWithDates.filter(d => d.deadline), d => d.deadline);
+            if (maxDeadline && maxDeadline > maxDate) {
+                maxDate = new Date(maxDeadline.getTime() + 3 * 24 * 60 * 60 * 1000); // Add 3 days padding
+            }
 
             const xScale = d3.scaleTime()
                 .domain([minDate, maxDate])
@@ -2008,13 +2012,13 @@
                 .append('line')
                 .attr('class', 'deadline-global-line')
                 .attr('x1', d => xScale(parseDate(d)))
-                .attr('y1', -10)
+                .attr('y1', -15)
                 .attr('x2', d => xScale(parseDate(d)))
                 .attr('y2', height)
                 .attr('stroke', '#ef4444')
-                .attr('stroke-width', 2)
-                .attr('stroke-dasharray', '5,3')
-                .attr('opacity', 0.4);
+                .attr('stroke-width', 2.5)
+                .attr('stroke-dasharray', '6,3')
+                .attr('opacity', 0.8);
 
             // Draw triangle at top of deadline line
             svg.selectAll('path.deadline-top-marker')
@@ -2024,10 +2028,24 @@
                 .attr('class', 'deadline-top-marker')
                 .attr('d', d => {
                     const x = xScale(parseDate(d));
-                    return `M${x},0 L${x-5},-10 L${x+5},-10 Z`;
+                    return `M${x},0 L${x-7},-12 L${x+7},-12 Z`;
                 })
                 .attr('fill', '#ef4444')
-                .attr('opacity', 0.7);
+                .attr('opacity', 0.9);
+
+            // Add deadline date label at top
+            svg.selectAll('text.deadline-label')
+                .data(uniqueDeadlines)
+                .enter()
+                .append('text')
+                .attr('class', 'deadline-label')
+                .attr('x', d => xScale(parseDate(d)))
+                .attr('y', -16)
+                .attr('text-anchor', 'middle')
+                .attr('fill', '#ef4444')
+                .attr('font-size', '10px')
+                .attr('font-weight', '700')
+                .text(d => 'Termin: ' + d);
 
             // Draw deadline zones (shaded area from deadline to bar end for overdue items)
             svg.selectAll('rect.deadline-zone')
@@ -2086,8 +2104,8 @@
                 })
                 .on('mousemove', function(event) {
                     const tooltip = document.getElementById('tooltip');
-                    tooltip.style.left = (event.pageX + 15) + 'px';
-                    tooltip.style.top = (event.pageY + 15) + 'px';
+                    tooltip.style.left = (event.clientX + 15) + 'px';
+                    tooltip.style.top = (event.clientY + 15) + 'px';
                 })
                 .on('mouseout', function() {
                     const d = d3.select(this).datum();
@@ -2095,30 +2113,30 @@
                     hideTooltip();
                 });
 
-            // Draw today line (solid red line)
+            // Draw today line (solid blue line - distinct from red deadline)
             const todayDate = new Date();
             const todayX = xScale(todayDate);
             if (todayX >= 0 && todayX <= width) {
                 svg.append('line')
                     .attr('x1', todayX)
-                    .attr('y1', 0)
+                    .attr('y1', -15)
                     .attr('x2', todayX)
                     .attr('y2', height)
-                    .attr('stroke', '#ef4444')
+                    .attr('stroke', '#60a5fa')
                     .attr('stroke-width', 2.5)
-                    .attr('opacity', 0.8);
+                    .attr('opacity', 0.9);
 
                 // Triangle at top
                 svg.append('path')
                     .attr('d', `M${todayX},0 L${todayX-6},-12 L${todayX+6},-12 Z`)
-                    .attr('fill', '#ef4444')
+                    .attr('fill', '#60a5fa')
                     .attr('opacity', 0.9);
 
                 svg.append('text')
                     .attr('x', todayX)
-                    .attr('y', -20)
-                    .attr('fill', '#ef4444')
-                    .attr('font-size', '12px')
+                    .attr('y', -18)
+                    .attr('fill', '#60a5fa')
+                    .attr('font-size', '11px')
                     .attr('font-weight', '700')
                     .attr('text-anchor', 'middle')
                     .text('Bugün');
@@ -2184,8 +2202,8 @@
                 })
                 .on('mousemove', function(event) {
                     const tooltip = document.getElementById('tooltip');
-                    tooltip.style.left = (event.pageX + 15) + 'px';
-                    tooltip.style.top = (event.pageY + 15) + 'px';
+                    tooltip.style.left = (event.clientX + 15) + 'px';
+                    tooltip.style.top = (event.clientY + 15) + 'px';
                 })
                 .on('mouseout', hideTooltip);
 
@@ -2559,8 +2577,8 @@
             const tooltip = document.getElementById('tooltip');
             tooltip.innerHTML = content;
             tooltip.style.display = 'block';
-            tooltip.style.left = (event.pageX + 10) + 'px';
-            tooltip.style.top = (event.pageY + 10) + 'px';
+            tooltip.style.left = (event.clientX + 10) + 'px';
+            tooltip.style.top = (event.clientY + 10) + 'px';
         }
 
         function hideTooltip() {
