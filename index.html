@@ -101,6 +101,97 @@
             box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
         }
 
+        /* Multi-select dropdown */
+        .multi-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .multi-select-toggle {
+            background-color: #0f1117;
+            color: #e2e8f0;
+            border: 1px solid #2d3148;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .multi-select-toggle:hover {
+            border-color: #4299e1;
+            background-color: #1a202c;
+        }
+
+        .multi-select-toggle .arrow {
+            font-size: 0.7rem;
+            margin-left: 8px;
+            transition: transform 0.2s;
+        }
+
+        .multi-select-toggle.open .arrow {
+            transform: rotate(180deg);
+        }
+
+        .multi-select-dropdown {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: #1a202c;
+            border: 1px solid #2d3148;
+            border-radius: 6px;
+            margin-top: 4px;
+            max-height: 220px;
+            overflow-y: auto;
+            z-index: 1000;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+        }
+
+        .multi-select-dropdown.show {
+            display: block;
+        }
+
+        .multi-select-dropdown label {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: #e2e8f0;
+            transition: background 0.15s;
+            margin-bottom: 0;
+            font-weight: 400;
+        }
+
+        .multi-select-dropdown label:hover {
+            background: #2d3148;
+        }
+
+        .multi-select-dropdown input[type="checkbox"] {
+            margin-right: 10px;
+            accent-color: #60a5fa;
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .multi-select-count {
+            background: #60a5fa;
+            color: #0f1117;
+            border-radius: 10px;
+            padding: 1px 7px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            margin-left: 6px;
+        }
+
         .reset-btn {
             background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
             color: white;
@@ -1022,34 +1113,24 @@
             <h3>Filtreler</h3>
             <div class="filters-grid">
                 <div class="filter-group">
-                    <label for="filterKategori">Kategori</label>
-                    <select id="filterKategori">
-                        <option value="">Tümü</option>
-                    </select>
+                    <label>Kategori</label>
+                    <div class="multi-select" id="msKategori"></div>
                 </div>
                 <div class="filter-group">
-                    <label for="filterAltKategori">Alt Kategori</label>
-                    <select id="filterAltKategori">
-                        <option value="">Tümü</option>
-                    </select>
+                    <label>Alt Kategori</label>
+                    <div class="multi-select" id="msAltKategori"></div>
                 </div>
                 <div class="filter-group">
-                    <label for="filterDurum">Durum</label>
-                    <select id="filterDurum">
-                        <option value="">Tümü</option>
-                    </select>
+                    <label>Durum</label>
+                    <div class="multi-select" id="msDurum"></div>
                 </div>
                 <div class="filter-group">
-                    <label for="filterSorumlu">Sorumlu</label>
-                    <select id="filterSorumlu">
-                        <option value="">Tümü</option>
-                    </select>
+                    <label>Sorumlu</label>
+                    <div class="multi-select" id="msSorumlu"></div>
                 </div>
                 <div class="filter-group">
-                    <label for="filterOncelik">Öncelik</label>
-                    <select id="filterOncelik">
-                        <option value="">Tümü</option>
-                    </select>
+                    <label>Öncelik</label>
+                    <div class="multi-select" id="msOncelik"></div>
                 </div>
             </div>
             <button class="reset-btn" onclick="resetFilters()">Filtreleri Sıfırla</button>
@@ -1137,6 +1218,7 @@
                             <th>Öncelik</th>
                             <th>Sorumlu</th>
                             <th>İlk Görülme</th>
+                            <th>Geçen Gün</th>
                             <th>Çözüm Tarihi</th>
                             <th>Termin Süresi</th>
                             <th>Kalan Gün</th>
@@ -1224,6 +1306,18 @@
             return na - nb;
         });
 
+        // Normalize Sorumlu field to prevent duplicates
+        const sorumluNormalizationMap = {};
+        ALL_DATA.forEach(d => {
+            if (d.sorumlu) {
+                const normalized = d.sorumlu.trim().toUpperCase();
+                if (!sorumluNormalizationMap[normalized]) {
+                    sorumluNormalizationMap[normalized] = d.sorumlu.trim();
+                }
+                d.sorumlu = sorumluNormalizationMap[normalized];
+            }
+        });
+
         let filteredData = [...ALL_DATA];
         let ganttDateRange = { start: null, end: null };
         let activeStatFilter = { type: null, value: null };
@@ -1263,6 +1357,17 @@
             const today = new Date();
             const diff = Math.ceil((today - date) / (1000 * 60 * 60 * 24));
             return diff;
+        }
+
+        // Calculate days elapsed since first seen
+        function getElapsedDays(ilkGorulme) {
+            if (!ilkGorulme) return '-';
+            const start = new Date(ilkGorulme);
+            const today = new Date();
+            const diff = Math.floor((today - start) / (1000 * 60 * 60 * 24));
+            if (diff <= 7) return `<span style="color:#10b981">${diff} gün</span>`;
+            if (diff <= 30) return `<span style="color:#f59e0b">${diff} gün</span>`;
+            return `<span style="color:#ef4444">${diff} gün</span>`;
         }
 
         // Deadline Performance Calculations
@@ -1423,6 +1528,71 @@
         }
 
         // Initialize filter options
+        // Multi-select dropdown helper
+        function createMultiSelect(containerId, options) {
+            const container = document.getElementById(containerId);
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'multi-select-toggle';
+            toggle.innerHTML = 'Tümü <span class="arrow">▼</span>';
+
+            const dropdown = document.createElement('div');
+            dropdown.className = 'multi-select-dropdown';
+
+            options.forEach(opt => {
+                const lbl = document.createElement('label');
+                const cb = document.createElement('input');
+                cb.type = 'checkbox';
+                cb.value = opt;
+                cb.addEventListener('change', () => {
+                    updateMultiSelectLabel(containerId);
+                    applyFilters();
+                });
+                lbl.appendChild(cb);
+                lbl.appendChild(document.createTextNode(opt));
+                dropdown.appendChild(lbl);
+            });
+
+            toggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                // Close all other dropdowns
+                document.querySelectorAll('.multi-select-dropdown.show').forEach(d => {
+                    if (d !== dropdown) { d.classList.remove('show'); d.previousElementSibling.classList.remove('open'); }
+                });
+                dropdown.classList.toggle('show');
+                toggle.classList.toggle('open');
+            });
+
+            container.appendChild(toggle);
+            container.appendChild(dropdown);
+        }
+
+        function getMultiSelectValues(containerId) {
+            const container = document.getElementById(containerId);
+            const checked = container.querySelectorAll('input[type="checkbox"]:checked');
+            return Array.from(checked).map(cb => cb.value);
+        }
+
+        function updateMultiSelectLabel(containerId) {
+            const container = document.getElementById(containerId);
+            const toggle = container.querySelector('.multi-select-toggle');
+            const checked = container.querySelectorAll('input[type="checkbox"]:checked');
+            if (checked.length === 0) {
+                toggle.innerHTML = 'Tümü <span class="arrow">▼</span>';
+            } else {
+                toggle.innerHTML = `${checked.length} seçili <span class="multi-select-count">${checked.length}</span> <span class="arrow">▼</span>`;
+            }
+        }
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.multi-select-dropdown.show').forEach(d => {
+                d.classList.remove('show');
+                d.previousElementSibling.classList.remove('open');
+            });
+        });
+
+        // Initialize filter options
         function initializeFilters() {
             const kategoriler = [...new Set(ALL_DATA.map(d => d.kategori))].sort();
             const altKategoriler = [...new Set(ALL_DATA.map(d => d.altKategori))].sort();
@@ -1430,47 +1600,11 @@
             const sorumlular = [...new Set(ALL_DATA.map(d => d.sorumlu).filter(s => s))].sort();
             const oncelikler = ['Yüksek', 'Orta', 'Düşük'];
 
-            kategoriler.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
-                document.getElementById('filterKategori').appendChild(option);
-            });
-
-            altKategoriler.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
-                document.getElementById('filterAltKategori').appendChild(option);
-            });
-
-            durumler.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
-                document.getElementById('filterDurum').appendChild(option);
-            });
-
-            sorumlular.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
-                document.getElementById('filterSorumlu').appendChild(option);
-            });
-
-            oncelikler.forEach(k => {
-                const option = document.createElement('option');
-                option.value = k;
-                option.textContent = k;
-                document.getElementById('filterOncelik').appendChild(option);
-            });
-
-            // Add event listeners
-            document.getElementById('filterKategori').addEventListener('change', applyFilters);
-            document.getElementById('filterAltKategori').addEventListener('change', applyFilters);
-            document.getElementById('filterDurum').addEventListener('change', applyFilters);
-            document.getElementById('filterSorumlu').addEventListener('change', applyFilters);
-            document.getElementById('filterOncelik').addEventListener('change', applyFilters);
+            createMultiSelect('msKategori', kategoriler);
+            createMultiSelect('msAltKategori', altKategoriler);
+            createMultiSelect('msDurum', durumler);
+            createMultiSelect('msSorumlu', sorumlular);
+            createMultiSelect('msOncelik', oncelikler);
 
             // Initialize Gantt date controls
             initializeGanttControls();
@@ -1603,30 +1737,26 @@
 
         // Apply filters
         function applyFilters() {
-            const kategori = document.getElementById('filterKategori').value;
-            const altKategori = document.getElementById('filterAltKategori').value;
-            const durum = document.getElementById('filterDurum').value;
-            const sorumlu = document.getElementById('filterSorumlu').value;
-            const oncelik = document.getElementById('filterOncelik').value;
+            const kategori = getMultiSelectValues('msKategori');
+            const altKategori = getMultiSelectValues('msAltKategori');
+            const durum = getMultiSelectValues('msDurum');
+            const sorumlu = getMultiSelectValues('msSorumlu');
+            const oncelik = getMultiSelectValues('msOncelik');
 
             filteredData = ALL_DATA.filter(d => {
-                return (!kategori || d.kategori === kategori) &&
-                       (!altKategori || d.altKategori === altKategori) &&
-                       (!durum || d.durum === durum) &&
-                       (!sorumlu || d.sorumlu === sorumlu) &&
-                       (!oncelik || d.oncelik === oncelik);
+                return (kategori.length === 0 || kategori.includes(d.kategori)) &&
+                       (altKategori.length === 0 || altKategori.includes(d.altKategori)) &&
+                       (durum.length === 0 || durum.includes(d.durum)) &&
+                       (sorumlu.length === 0 || sorumlu.includes(d.sorumlu)) &&
+                       (oncelik.length === 0 || oncelik.includes(d.oncelik));
             });
 
             updateDashboard();
         }
 
-        // Reset filters
         function resetFilters() {
-            document.getElementById('filterKategori').value = '';
-            document.getElementById('filterAltKategori').value = '';
-            document.getElementById('filterDurum').value = '';
-            document.getElementById('filterSorumlu').value = '';
-            document.getElementById('filterOncelik').value = '';
+            document.querySelectorAll('.multi-select input[type="checkbox"]').forEach(cb => cb.checked = false);
+            document.querySelectorAll('.multi-select').forEach(ms => updateMultiSelectLabel(ms.id));
             filteredData = [...ALL_DATA];
             updateDashboard();
         }
@@ -1926,6 +2056,7 @@
                     <td><span class="badge ${oncelikBadge}">${record.oncelik}</span></td>
                     <td>${record.sorumlu}</td>
                     <td>${record.ilkGorulme || '-'}</td>
+                    <td class="gecen-gun-cell">${getElapsedDays(record.ilkGorulme)}</td>
                     <td>${record.cozumTarihi || '-'}</td>
                     <td>${record.terminSuresi || '-'}</td>
                     <td class="${remainingDaysClass}">${remainingDaysCell}</td>
@@ -2538,13 +2669,16 @@
             }
 
             // Create CSV headers (Turkish)
-            const headers = ['ID', 'Konu', 'Kategori', 'Alt Kategori', 'Durum', 'Öncelik', 'Sorumlu', 'İlk Görülme', 'Çözüm Tarihi', 'Termin Süresi', 'Kalan Gün'];
+            const headers = ['ID', 'Konu', 'Kategori', 'Alt Kategori', 'Durum', 'Öncelik', 'Sorumlu', 'İlk Görülme', 'Geçen Gün', 'Çözüm Tarihi', 'Termin Süresi', 'Kalan Gün'];
 
             // Create CSV rows
             let csv = headers.map(h => `"${h}"`).join(',') + '\n';
 
             tableData.forEach(record => {
                 const remainingDays = getRemainingDaysCell(record);
+                const elapsedDays = getElapsedDays(record.ilkGorulme);
+                // Strip HTML tags from elapsed days for CSV
+                const elapsedDaysText = elapsedDays.includes('<span') ? elapsedDays.replace(/<span[^>]*>|<\/span>/g, '') : elapsedDays;
                 const row = [
                     record.id,
                     record.konu,
@@ -2554,6 +2688,7 @@
                     record.oncelik,
                     record.sorumlu || '',
                     record.ilkGorulme || '',
+                    elapsedDaysText,
                     record.cozumTarihi || '',
                     record.terminSuresi || '',
                     remainingDays
