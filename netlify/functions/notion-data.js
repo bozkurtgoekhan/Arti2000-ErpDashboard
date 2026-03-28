@@ -79,7 +79,7 @@ exports.handler = async function(event, context) {
         altKategori: getSelect(p['Alt Kategori']),
         durum: getSelect(p['Durum']),
         oncelik: getSelect(p['Öncelik']),
-        sorumlu: getRichText(p['Sorumlu']),
+        sorumlu: getSelect(p['Sorumlu']),
         ilkGorulme: getDate(p['İlk Görülme']),
         cozumTarihi: getDate(p['Çözüm Tarihi']),
         terminSuresi: getDate(p['Termin Süresi'])
