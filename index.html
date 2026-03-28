@@ -2737,6 +2737,17 @@
                             const nb = parseInt(b.id.replace('ERP-', '')) || 0;
                             return na - nb;
                         });
+                        // Normalize Sorumlu field after API load
+                        const apiSorumluMap = {};
+                        ALL_DATA.forEach(d => {
+                            if (d.sorumlu) {
+                                const normalized = d.sorumlu.trim().toUpperCase();
+                                if (!apiSorumluMap[normalized]) {
+                                    apiSorumluMap[normalized] = d.sorumlu.trim();
+                                }
+                                d.sorumlu = apiSorumluMap[normalized];
+                            }
+                        });
                         loadText.textContent = data.length + ' kayıt yüklendi!';
                         document.getElementById('updateInfo').innerHTML = 'Canlı Notion verisi · Son güncelleme: ' + new Date().toLocaleString('tr-TR');
                     } else if (data.error) {
